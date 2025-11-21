@@ -37,3 +37,13 @@ export const hardDeleteProductService = async (data: SoftDeleteProductData) => {
   const response = await api.post("/api/product/v1/product-hard-delete", data);
   return response.data;
 };
+
+export const getActiveProductsService = async () => {
+  const response = await api.get("/api/product/v1/product-active-list");
+  return response.data;
+};
+
+export const getProductByIdService = async (id: string) => {
+  const response = await api.post("/api/product/v1/product-get-by-id", { id });
+  return response.data;
+};
