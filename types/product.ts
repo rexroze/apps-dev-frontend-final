@@ -1,12 +1,31 @@
-export interface Product {
+export interface ProductListResponse {
   id: string;
+  userId: string;
   name: string;
   description: string;
   price: number;
-  image?: string;
-  status: "active" | "inactive" | "draft";
   stock: number;
-  category?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  image: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateProductData {
+  userId: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string;
+}
+
+export interface UpdateProductData {
+  id: string;
+  userId: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string;
 }

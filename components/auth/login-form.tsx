@@ -21,7 +21,7 @@ import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { getRedirectPathByRole } from "@/lib/auth-utils";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/components/auth/contexts/auth-context";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);

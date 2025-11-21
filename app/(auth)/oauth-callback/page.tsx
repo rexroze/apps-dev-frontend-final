@@ -11,7 +11,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getRedirectPathByRole } from "@/lib/auth-utils";
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/components/auth/contexts/auth-context";
 
 export default function OAuthCallbackPage() {
   const searchParams = useSearchParams();

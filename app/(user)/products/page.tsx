@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/components/auth/contexts/auth-context";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { Product } from "@/types/product";
 import { Button } from "@/components/ui/button";
