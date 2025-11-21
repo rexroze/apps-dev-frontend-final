@@ -20,10 +20,13 @@ import { toast } from "sonner";
 import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { getRedirectPathByRole } from "@/lib/auth-utils";
+import { useAuth } from "@/contexts/auth-context";
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginValidator),
@@ -39,19 +42,19 @@ export function LoginForm() {
       const response = await loginService(values);
       
       if (response.status === "success" && response.data) {
-        // Store tokens in localStorage
-        if (response.data.tokens) {
-          localStorage.setItem("accessToken", response.data.tokens.accessToken);
-          localStorage.setItem("refreshToken", response.data.tokens.refreshToken);
-        }
-        
-        // Store user data if needed
-        if (response.data.user) {
-          localStorage.setItem("user", JSON.stringify(response.data.user));
+        // Use context login to update global state
+        if (response.data.tokens && response.data.user) {
+          login(response.data.user, {
+            accessToken: response.data.tokens.accessToken,
+            refreshToken: response.data.tokens.refreshToken,
+          });
         }
 
         toast.success(response.message || "Login successful");
-        router.push("/");
+        
+        // Redirect based on user role
+        const redirectPath = getRedirectPathByRole(response.data.user);
+        router.push(redirectPath);
         form.reset();
       }
       

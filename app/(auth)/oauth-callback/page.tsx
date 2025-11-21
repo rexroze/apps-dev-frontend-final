@@ -10,10 +10,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getRedirectPathByRole } from "@/lib/auth-utils";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function OAuthCallbackPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { login } = useAuth();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState<string>("");
 
@@ -39,24 +42,22 @@ export default function OAuthCallbackPage() {
           const response = await exchangeOAuthCode(code);
 
           if (response.status === "success" && response.data) {
-            // Store tokens in localStorage
-            if (response.data.tokens) {
-              localStorage.setItem("accessToken", response.data.tokens.accessToken);
-              localStorage.setItem("refreshToken", response.data.tokens.refreshToken);
-            }
-
-            // Store user data
-            if (response.data.user) {
-              localStorage.setItem("user", JSON.stringify(response.data.user));
+            // Use context login to update global state
+            if (response.data.tokens && response.data.user) {
+              login(response.data.user, {
+                accessToken: response.data.tokens.accessToken,
+                refreshToken: response.data.tokens.refreshToken,
+              });
             }
 
             setStatus("success");
             setMessage(response.message || "Authentication successful!");
             toast.success(response.message || "Authentication successful!");
 
-            // Redirect to home after a short delay
+            // Redirect based on user role
+            const redirectPath = getRedirectPathByRole(response.data.user);
             setTimeout(() => {
-              router.push("/");
+              router.push(redirectPath);
             }, 1500);
           } else {
             throw new Error(response.message || "Authentication failed");
@@ -125,4 +126,3 @@ export default function OAuthCallbackPage() {
     </div>
   );
 }
-
