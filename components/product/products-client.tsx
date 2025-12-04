@@ -124,12 +124,12 @@ export function ProductsClient() {
                           {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
                         </span>
                       </div>
-                      {product.user && (
+                      {/* {product.user && (
                         <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                           <User className="w-3 h-3 text-gray-400" />
                           <span className="text-xs text-gray-500">Posted by {product.user.name}</span>
                         </div>
-                      )}
+                      )} */}
                       <div className="flex gap-2 mt-3">
                         <Button
                           size="sm"
