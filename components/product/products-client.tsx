@@ -15,7 +15,7 @@ export function ProductsClient() {
   const { products, isLoading, isError, error, mutate } = useActiveProducts();
 
   const handleProductClick = (productId: string) => {
-    router.push(`/marketplace/${productId}`);
+    router.push(`/store/${productId}`);
   };
 
   const handleAddToCart = (e: React.MouseEvent, productName: string) => {
@@ -35,8 +35,8 @@ export function ProductsClient() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <ShoppingBag className="w-6 h-6 text-primary" />
-              <h1 className="text-2xl font-bold text-gray-900">Marketplace</h1>
+              {/* <ShoppingBag className="w-6 h-6 text-primary" /> */}
+              <h1 className="text-2xl font-bold text-gray-900">TechCraftersHQ</h1>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
@@ -52,7 +52,7 @@ export function ProductsClient() {
       {/* Products Grid */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
-          <p className="text-gray-600">Browse our active products in the marketplace</p>
+          <p className="text-gray-600">Browse our active products in the store</p>
         </div>
 
         {/* Loading State */}
@@ -60,7 +60,7 @@ export function ProductsClient() {
           <div className="flex items-center justify-center py-12">
             <div className="flex flex-col items-center gap-4">
               <Spinner className="w-8 h-8" />
-              <p className="text-sm text-gray-600">Loading products in the marketplace...</p>
+              <p className="text-sm text-gray-600">Loading products in the store...</p>
             </div>
           </div>
         )}
@@ -71,7 +71,7 @@ export function ProductsClient() {
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-red-600" />
               <p className="text-sm text-red-600">
-                {error?.message || "Failed to fetch products in the marketplace"}
+                {error?.message || "Failed to fetch products in the store"}
               </p>
               <Button
                 variant="outline"
@@ -90,7 +90,7 @@ export function ProductsClient() {
           <>
             {products.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500">No active products available in the marketplace</p>
+                <p className="text-gray-500">No active products available in the store</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

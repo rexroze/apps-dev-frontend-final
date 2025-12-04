@@ -10,7 +10,7 @@ export function getRedirectPathByRole(user: User | null): string {
     case "ADMIN":
       return "/admin/products";
     case "USER":
-      return "/marketplace";
+      return "/store";
     default:
       return "/";
   }

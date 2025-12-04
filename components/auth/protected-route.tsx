@@ -32,7 +32,7 @@ export function ProtectedRoute({
         if (user.role.toUpperCase() === "ADMIN") {
           router.push("/admin/products");
         } else {
-          router.push("/marketplace");
+          router.push("/store");
         }
         return;
       }
