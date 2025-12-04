@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ShoppingBag, ArrowLeft, DollarSign, Package, Calendar } from "lucide-react";
+import { ShoppingBag, ArrowLeft, PhilippinePeso, Package, Calendar, ShoppingCart } from "lucide-react";
 import { getProductByIdService } from "@/services/product";
 import { ProductDetailResponse } from "@/types/product";
 import { toast } from "sonner";
 import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
 import Image from "next/image";
+import { Input } from "../ui/input";
+import Link from "next/link";
 
 interface ProductDetailClientProps {
   productId: string;
@@ -53,17 +55,31 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Products
-          </Button>
+      <header className="bg-green-900 shadow-sm border-b max-h-18">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* <ShoppingBag className="w-6 h-6 text-primary" /> */}
+              <Button
+              variant="outline"
+              className="mt-4 my-2"
+              size="sm"
+              onClick={() => router.push("/store")}
+            >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+              <h1 className="text-2xl font-bold text-yellow-500">Product Detail</h1>
+            </div>
+            <Input
+                  placeholder="Search..."
+                  className="max-w-xl bg-white rounded-full m-4 p-4"
+                />
+            <div className="flex items-center gap-6">
+              <Link href="/cart">
+              <ShoppingCart className="text-secondary"/></Link>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -79,13 +95,13 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
         ) : product ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Product Image */}
-            <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center p-8">
+            <div className="aspect-square bg-white rounded-lg flex items-center justify-center p-8">
               {product.image ? (
                 <Image
                   src={product.image}
                   alt={product.name}
-                  width={600}
-                  height={600}
+                  width={500}
+                  height={500}
                   className="object-contain rounded-lg"
                 />
               ) : (
@@ -102,10 +118,10 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-primary" />
+                  <PhilippinePeso className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-sm text-gray-600">Price</p>
-                    <p className="text-2xl font-bold text-gray-900">${product.price.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-gray-900">₱{product.price.toFixed(2)}</p>
                   </div>
                 </div>
 
@@ -118,7 +134,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+              {/* <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                 <Calendar className="w-5 h-5 text-primary" />
                 <div>
                   <p className="text-sm text-gray-600">Created</p>
@@ -130,7 +146,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                     })}
                   </p>
                 </div>
-              </div>
+              </div> */}
 
               <div className="pt-4 border-t space-y-3">
                 <Button

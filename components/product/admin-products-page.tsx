@@ -60,19 +60,19 @@ export function AdminProductsPage() {
     <ProtectedRoute requiredRole="ADMIN">
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b">
+        <header className="bg-green-900 shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Settings className="w-6 h-6 text-primary" />
-                <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
+                <Settings className="w-6 h-6 text-secondary" />
+                <h1 className="text-2xl font-bold text-yellow-500">Product Management</h1>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">Admin: {user?.name}</span>
+              <div className="flex items-center gap-6">
+                <span className="text-sm text-white">Admin: {user?.name}</span>
                 <Button variant="outline" size="sm" onClick={logout}>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
+                <LogOut className="w-4 h-4 mr-2" />
+                <span className="hidden lg:inline">Logout</span>  
+              </Button>
               </div>
             </div>
           </div>
