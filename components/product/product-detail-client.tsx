@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/components/cart/cart-context";
+import CartButton from "@/components/cart/cart-button";
 import { Spinner } from "@/components/ui/spinner";
 import { ShoppingBag, ArrowLeft, PhilippinePeso, Package, Calendar, ShoppingCart } from "lucide-react";
 import { getProductByIdService } from "@/services/product";
@@ -12,6 +14,7 @@ import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
 import Image from "next/image";
 import { Input } from "../ui/input";
+import SearchFilter from "@/components/ui/search-filter";
 import Link from "next/link";
 
 interface ProductDetailClientProps {
@@ -44,7 +47,11 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
     }
   };
 
+  const { addItem } = useCart();
+
   const handleAddToCart = () => {
+    if (!product) return;
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image }, 1);
     toast.success("Added to Cart");
   };
 
@@ -71,13 +78,9 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
             </Button>
               <h1 className="text-2xl font-bold text-yellow-500">Product Detail</h1>
             </div>
-            <Input
-                  placeholder="Search..."
-                  className="max-w-xl bg-white rounded-full m-4 p-4"
-                />
+            <SearchFilter />
             <div className="flex items-center gap-6">
-              <Link href="/cart">
-              <ShoppingCart className="text-secondary"/></Link>
+              <CartButton />
             </div>
           </div>
         </div>

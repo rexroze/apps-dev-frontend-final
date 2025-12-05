@@ -12,10 +12,11 @@ interface UseActiveProductsReturn {
   mutate: KeyedMutator<any>;
 }
 
-export function useActiveProducts(): UseActiveProductsReturn {
+export function useActiveProducts(opts?: { search?: string; categoryId?: string; page?: number; limit?: number }): UseActiveProductsReturn {
+  const key = ["active-products", opts?.search ?? "", opts?.categoryId ?? "", opts?.page ?? 1, opts?.limit ?? 100];
   const { data, error, isLoading, mutate } = useSWR(
-    "active-products",
-    () => getActiveProductsService(),
+    key,
+    () => getActiveProductsService(opts),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,

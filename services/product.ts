@@ -38,8 +38,14 @@ export const hardDeleteProductService = async (data: SoftDeleteProductData) => {
   return response.data;
 };
 
-export const getActiveProductsService = async () => {
-  const response = await api.get("/api/product/v1/product-active-list");
+export const getActiveProductsService = async (opts?: { search?: string; categoryId?: string; page?: number; limit?: number }) => {
+  const params: any = {};
+  if (opts?.search) params.search = opts.search;
+  if (opts?.categoryId) params.categoryId = opts.categoryId;
+  if (opts?.page) params.page = opts.page;
+  if (opts?.limit) params.limit = opts.limit;
+
+  const response = await api.get("/api/product/v1/product-active-list", { params });
   return response.data;
 };
 

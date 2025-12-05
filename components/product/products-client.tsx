@@ -7,22 +7,31 @@ import { ShoppingBag, LogOut, User, AlertCircle, ShoppingCart } from "lucide-rea
 import Image from "next/image";
 import { Spinner } from "@/components/ui/spinner";
 import { useActiveProducts } from "@/hooks/use-active-products";
+import SearchFilter from "@/components/ui/search-filter";
+import CartButton from "@/components/cart/cart-button";
+import { useCart } from "@/components/cart/cart-context";
 import { toast } from "sonner";
 import { Input } from "../ui/input";
 import Link from "next/link";
+import React from 'react';
 
 
 export function ProductsClient() {
   const router = useRouter();
   const { user, logout } = useAuth();
-  const { products, isLoading, isError, error, mutate } = useActiveProducts();
+  const [search, setSearch] = React.useState<string | undefined>(undefined);
+  const [categoryId, setCategoryId] = React.useState<string | undefined>(undefined);
+  const { products, isLoading, isError, error, mutate } = useActiveProducts({ search, categoryId });
 
   const handleProductClick = (productId: string) => {
     router.push(`/store/${productId}`);
   };
 
-  const handleAddToCart = (e: React.MouseEvent, productName: string) => {
+  const { addItem } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent, product: any) => {
     e.stopPropagation();
+    addItem({ id: product.id, name: product.name, price: product.price, image: product.image }, 1);
     toast.success("Added to Cart");
   };
 
@@ -41,13 +50,17 @@ export function ProductsClient() {
               {/* <ShoppingBag className="w-6 h-6 text-primary" /> */}
               <h1 className="text-2xl font-bold text-yellow-500">TechCraftersHQ</h1>
             </div>
-            <Input
-                  placeholder="Search..."
-                  className="max-w-xl bg-white rounded-full m-4 p-4"
-                />
+            <SearchFilter
+              initialSearch=""
+              initialCategoryId={undefined}
+              onChange={({ search, categoryId }) => {
+                setSearch(search);
+                setCategoryId(categoryId);
+              }}
+              redirectToStore={false}
+            />
             <div className="flex items-center gap-6">
-              <Link href="/cart">
-              <ShoppingCart className="text-secondary"/></Link>
+              <CartButton />
               
               {/* <span className="text-sm text-gray-600">Welcome, {user?.name}</span> */}
               <Button variant="outline" size="sm" onClick={logout}>
@@ -147,7 +160,7 @@ export function ProductsClient() {
                           size="sm"
                           className="flex-1"
                           disabled={product.stock === 0}
-                          onClick={(e) => handleAddToCart(e, product.name)}
+                          onClick={(e) => handleAddToCart(e, product)}
                         >
                           {product.stock > 0 ? "Add to Cart" : "Out of Stock"}
                         </Button>

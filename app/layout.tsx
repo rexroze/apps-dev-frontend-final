@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/components/auth/contexts/auth-context";
+import CartProvider from "@/components/cart/cart-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,8 +25,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-          {children}
-          <Toaster richColors />
+          <CartProvider>
+            {children}
+            <Toaster richColors />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>
