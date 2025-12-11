@@ -6,11 +6,10 @@ import { ProtectedRoute } from "@/components/auth/protected-route";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Settings, AlertCircle, Plus, Edit, Trash2 } from "lucide-react";
+import { AlertCircle, Plus, Edit, Trash2 } from "lucide-react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
-import { UserMenu } from "@/components/ui/user-menu";
-import Link from "next/link";
+import { AdminLayout } from "@/components/admin/admin-layout";
 
 interface Category {
   id: string;
@@ -137,40 +136,7 @@ export function AdminCategoriesPage() {
 
   return (
     <ProtectedRoute requiredRole="ADMIN">
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-green-900 shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Link 
-                  href="/admin/products"
-                  className="p-1.5 rounded-md hover:bg-green-800 transition-all duration-200 group cursor-pointer"
-                  aria-label="Go to admin products"
-                >
-                  <Settings className="w-6 h-6 text-secondary group-hover:text-yellow-400 group-hover:rotate-90 transition-all duration-200" />
-                </Link>
-                <Link href="/store" className="text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors">
-                  TechCraftersHQ
-                </Link>
-                <span className="text-white">/</span>
-                <h1 className="text-2xl font-bold text-yellow-500">Category Management</h1>
-              </div>
-              <div className="flex items-center gap-6">
-                <Link href="/admin/products">
-                  <Button variant="outline" size="sm">Products</Button>
-                </Link>
-                <Link href="/admin/sales">
-                  <Button variant="outline" size="sm">Sales</Button>
-                </Link>
-                <UserMenu />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AdminLayout title="Category Management">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Categories</h2>
             <Button onClick={() => setIsCreateModalOpen(true)}>
@@ -195,7 +161,8 @@ export function AdminCategoriesPage() {
             </div>
           ) : (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
@@ -234,9 +201,9 @@ export function AdminCategoriesPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
-        </main>
 
         {/* Create Modal */}
         {isCreateModalOpen && (
@@ -341,7 +308,7 @@ export function AdminCategoriesPage() {
             </div>
           </div>
         )}
-      </div>
+      </AdminLayout>
     </ProtectedRoute>
   );
 }

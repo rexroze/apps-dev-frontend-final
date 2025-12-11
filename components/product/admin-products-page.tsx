@@ -7,18 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem} from "@/components/ui/select";
-import { Settings, LogOut, AlertCircle } from "lucide-react";
-import { UserMenu } from "@/components/ui/user-menu";
-import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { ProductTable } from "./product-table";
 import { AddProductModal } from "./add-product-modal";
 import { UpdateProductModal } from "./update-product-modal";
 import { DeleteProductModal } from "./delete-product-modal";
 import { ProductListResponse } from "@/types/product";
+import { AdminLayout } from "@/components/admin/admin-layout";
 
 export function AdminProductsPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { products, isLoading, isError, error, mutate } = useProducts(user?.id);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
@@ -60,40 +59,7 @@ export function AdminProductsPage() {
 
   return (
     <ProtectedRoute requiredRole="ADMIN">
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-green-900 shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Link 
-                  href="/admin/products"
-                  className="p-1.5 rounded-md hover:bg-green-800 transition-all duration-200 group cursor-pointer"
-                  aria-label="Go to admin products"
-                >
-                  <Settings className="w-6 h-6 text-secondary group-hover:text-yellow-400 group-hover:rotate-90 transition-all duration-200" />
-                </Link>
-                <Link href="/store" className="text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors">
-                  TechCraftersHQ
-                </Link>
-                <span className="text-white">/</span>
-                <h1 className="text-2xl font-bold text-yellow-500">Product Management</h1>
-              </div>
-              <div className="flex items-center gap-6">
-                <Link href="/admin/categories">
-                  <Button variant="outline" size="sm">Categories</Button>
-                </Link>
-                <Link href="/admin/sales">
-                  <Button variant="outline" size="sm">Sales</Button>
-                </Link>
-                <UserMenu />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AdminLayout title="Product Management">
           {/* Loading State */}
           {isLoading && (
             <div className="flex items-center justify-center py-12">
@@ -126,19 +92,19 @@ export function AdminProductsPage() {
 
           {/* Actions Bar */}
           {!isLoading && (
-            <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <div className="flex flex-col sm:flex-row gap-4 flex-1">
+            <div className="mb-6 flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 flex-1 w-full sm:w-auto">
                 <Input
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="max-w-xs"
+                  className="w-full sm:max-w-xs"
                 />
                 <Select
                   value={statusFilter}
                   onValueChange={(value) => setStatusFilter(value as "all" | "active" | "inactive")}
                 >
-                  <SelectTrigger className="max-w-xs">
+                  <SelectTrigger className="w-full sm:max-w-xs">
                     <SelectValue placeholder="Select Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -148,10 +114,12 @@ export function AdminProductsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <AddProductModal
-                userId={user?.id || ""}
-                onSuccess={() => mutate()}
-              />
+              <div className="w-full sm:w-auto">
+                <AddProductModal
+                  userId={user?.id || ""}
+                  onSuccess={() => mutate()}
+                />
+              </div>
             </div>
           )}
 
@@ -211,8 +179,7 @@ export function AdminProductsPage() {
               </div>
             </div>
           )}
-        </main>
-      </div>
+      </AdminLayout>
     </ProtectedRoute>
   );
 }

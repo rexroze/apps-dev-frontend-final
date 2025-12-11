@@ -5,13 +5,11 @@ import { useAuth } from "@/components/auth/contexts/auth-context";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { Settings, AlertCircle, Package, ArrowLeft, User, Calendar, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
+import { AlertCircle, Package, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
-import { UserMenu } from "@/components/ui/user-menu";
-import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { AdminLayout } from "@/components/admin/admin-layout";
 import {
   LineChart,
   Line,
@@ -57,7 +55,6 @@ interface Order {
 
 export function AdminSalesPage() {
   const { user } = useAuth();
-  const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -199,82 +196,48 @@ export function AdminSalesPage() {
 
   return (
     <ProtectedRoute requiredRole="ADMIN">
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <header className="bg-green-900 shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Link 
-                  href="/admin/products"
-                  className="p-1.5 rounded-md hover:bg-green-800 transition-all duration-200 group cursor-pointer"
-                  aria-label="Go to admin products"
-                >
-                  <Settings className="w-6 h-6 text-secondary group-hover:text-yellow-400 group-hover:rotate-90 transition-all duration-200" />
-                </Link>
-                <Link href="/store" className="text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors">
-                  TechCraftersHQ
-                </Link>
-                <span className="text-white">/</span>
-                <h1 className="text-2xl font-bold text-yellow-500">Sales History</h1>
-              </div>
-              <div className="flex items-center gap-6">
-                <Link href="/admin/products">
-                  <Button variant="outline" size="sm">Products</Button>
-                </Link>
-                <Link href="/admin/categories">
-                  <Button variant="outline" size="sm">Categories</Button>
-                </Link>
-                <span className="text-sm text-white">Admin: {user?.name}</span>
-                <UserMenu />
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AdminLayout title="Sales History">
           {/* Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">₱{totalRevenue.toFixed(2)}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600">Total Revenue</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 truncate">₱{totalRevenue.toFixed(2)}</p>
                   {recentTrend.change > 0 && (
                     <p className={`text-xs mt-1 ${recentTrend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
                       {recentTrend.isPositive ? '↑' : '↓'} {recentTrend.change.toFixed(1)}% vs last week
                     </p>
                   )}
                 </div>
-                <DollarSign className="w-8 h-8 text-green-600" />
+                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Orders</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{totalOrders}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600">Total Orders</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{totalOrders}</p>
                 </div>
-                <Package className="w-8 h-8 text-blue-600" />
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Avg Order Value</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">₱{averageOrderValue.toFixed(2)}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600">Avg Order Value</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 truncate">₱{averageOrderValue.toFixed(2)}</p>
                 </div>
-                <TrendingUp className="w-8 h-8 text-purple-600" />
+                <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Items Sold</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1">{totalItems}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600">Total Items Sold</p>
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{totalItems}</p>
                 </div>
-                <Package className="w-8 h-8 text-orange-600" />
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 flex-shrink-0 ml-2" />
               </div>
             </div>
           </div>
@@ -288,10 +251,10 @@ export function AdminSalesPage() {
               </h2>
 
               {/* Revenue and Orders Over Time */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Over Time</h3>
-                  <ResponsiveContainer width="100%" height={300}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Revenue Over Time</h3>
+                  <ResponsiveContainer width="100%" height={250}>
                     <AreaChart data={revenueOverTime}>
                       <defs>
                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
@@ -331,9 +294,9 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Orders Over Time</h3>
-                  <ResponsiveContainer width="100%" height={300}>
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Orders Over Time</h3>
+                  <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={revenueOverTime}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                       <XAxis 
@@ -368,10 +331,10 @@ export function AdminSalesPage() {
               </div>
 
               {/* Top Products and Revenue by Day */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Selling Products</h3>
-                  <ResponsiveContainer width="100%" height={300}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Top Selling Products</h3>
+                  <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={topProducts} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                       <XAxis 
@@ -405,9 +368,9 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue by Day of Week</h3>
-                  <ResponsiveContainer width="100%" height={300}>
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Revenue by Day of Week</h3>
+                  <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={revenueByDay}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                       <XAxis 
@@ -462,56 +425,56 @@ export function AdminSalesPage() {
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
-                <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <div className="flex items-center justify-between mb-4 pb-4 border-b">
+                <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 pb-4 border-b">
                     <div>
-                      <div className="text-sm text-gray-500">Order ID</div>
-                      <div className="font-semibold text-gray-900">{order.id.slice(0, 8)}...</div>
+                      <div className="text-xs sm:text-sm text-gray-500">Order ID</div>
+                      <div className="font-semibold text-sm sm:text-base text-gray-900 break-all">{order.id.slice(0, 8)}...</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Buyer</div>
-                      <div className="font-medium text-gray-900">{order.user.name}</div>
-                      <div className="text-xs text-gray-500">{order.user.email}</div>
+                      <div className="text-xs sm:text-sm text-gray-500">Buyer</div>
+                      <div className="font-medium text-sm sm:text-base text-gray-900">{order.user.name}</div>
+                      <div className="text-xs text-gray-500 truncate">{order.user.email}</div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm text-gray-500">Purchase Date</div>
-                      <div className="font-medium text-gray-900">
+                    <div className="sm:text-right">
+                      <div className="text-xs sm:text-sm text-gray-500">Purchase Date</div>
+                      <div className="font-medium text-xs sm:text-sm text-gray-900">
                         {new Date(order.createdAt).toLocaleDateString("en-US", {
                           year: "numeric",
-                          month: "long",
+                          month: "short",
                           day: "numeric",
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm text-gray-500">Total</div>
-                      <div className="text-xl font-bold text-primary">₱{order.total.toFixed(2)}</div>
+                    <div className="sm:text-right">
+                      <div className="text-xs sm:text-sm text-gray-500">Total</div>
+                      <div className="text-lg sm:text-xl font-bold text-primary">₱{order.total.toFixed(2)}</div>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="text-sm font-semibold text-gray-700 mb-2">Items Purchased:</div>
                     {order.items.map((item) => (
-                      <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded">
+                      <div key={item.id} className="flex items-start sm:items-center gap-3 sm:gap-4 p-3 bg-gray-50 rounded">
                         {item.product.image && (
                           <Image
                             src={item.product.image}
                             alt={item.product.name}
                             width={60}
                             height={60}
-                            className="object-contain rounded"
+                            className="object-contain rounded flex-shrink-0"
                           />
                         )}
-                        <div className="flex-1">
-                          <div className="font-medium">{item.product.name}</div>
-                          <div className="text-sm text-gray-600">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm sm:text-base break-words">{item.product.name}</div>
+                          <div className="text-xs sm:text-sm text-gray-600">
                             Quantity: {item.quantity} × ₱{item.price.toFixed(2)}
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="font-semibold">₱{(item.price * item.quantity).toFixed(2)}</div>
+                        <div className="text-right flex-shrink-0">
+                          <div className="font-semibold text-sm sm:text-base">₱{(item.price * item.quantity).toFixed(2)}</div>
                         </div>
                       </div>
                     ))}
@@ -520,8 +483,7 @@ export function AdminSalesPage() {
               ))}
             </div>
           )}
-        </main>
-      </div>
+      </AdminLayout>
     </ProtectedRoute>
   );
 }
