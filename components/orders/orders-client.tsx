@@ -4,13 +4,16 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { AlertCircle, Package, ArrowLeft } from "lucide-react";
+import { AlertCircle, Package, ArrowLeft, Star } from "lucide-react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
 import Link from "next/link";
 import { UserMenu } from "@/components/ui/user-menu";
 import CartButton from "@/components/cart/cart-button";
 import Image from "next/image";
+import { ReviewModal } from "@/components/review/review-modal";
+import { getUserReviewByOrderItem } from "@/services/review";
+import { Review } from "@/types/review";
 
 interface OrderItem {
   id: string;
@@ -36,10 +39,58 @@ export function OrdersClient() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{
+    id: string;
+    orderItemId: string;
+    name: string;
+    image?: string;
+  } | null>(null);
+  const [orderItemReviews, setOrderItemReviews] = useState<Map<string, Review>>(new Map());
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  // Load reviews for all order items
+  useEffect(() => {
+    if (orders.length > 0) {
+      loadOrderItemReviews();
+    }
+  }, [orders]);
+
+  const loadOrderItemReviews = async () => {
+    const orderItemIds: string[] = [];
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        orderItemIds.push(item.id);
+      });
+    });
+
+    const reviewsMap = new Map<string, Review>();
+    await Promise.all(
+      orderItemIds.map(async (orderItemId) => {
+        try {
+          const review = await getUserReviewByOrderItem(orderItemId);
+          if (review) {
+            reviewsMap.set(orderItemId, review);
+          }
+        } catch (error) {
+          // User hasn't reviewed this order item yet
+        }
+      })
+    );
+    setOrderItemReviews(reviewsMap);
+  };
+
+  const handleReviewClick = (orderItemId: string, productId: string, productName: string, productImage?: string) => {
+    setSelectedProduct({ id: productId, orderItemId, name: productName, image: productImage });
+    setReviewModalOpen(true);
+  };
+
+  const handleReviewSuccess = () => {
+    loadOrderItemReviews();
+  };
 
   const fetchOrders = async () => {
     setIsLoading(true);
@@ -171,34 +222,68 @@ export function OrdersClient() {
 
                 <div className="space-y-3">
                   <div className="text-sm font-semibold text-gray-700 mb-2">Items:</div>
-                  {order.items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded">
-                      {item.product.image && (
-                        <Image
-                          src={item.product.image}
-                          alt={item.product.name}
-                          width={60}
-                          height={60}
-                          className="object-contain rounded"
-                        />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{item.product.name}</div>
-                        <div className="text-sm text-gray-600">
-                          Quantity: {item.quantity} × ₱{item.price.toFixed(2)}
+                  {order.items.map((item) => {
+                    const hasReview = orderItemReviews.has(item.id);
+                    const review = orderItemReviews.get(item.id);
+                    return (
+                      <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded">
+                        {item.product.image && (
+                          <Image
+                            src={item.product.image}
+                            alt={item.product.name}
+                            width={60}
+                            height={60}
+                            className="object-contain rounded"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">{item.product.name}</div>
+                          <div className="text-sm text-gray-600">
+                            Quantity: {item.quantity} × ₱{item.price.toFixed(2)}
+                          </div>
+                          {hasReview && review && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              <span className="text-xs text-gray-600">You rated {review.rating} stars</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <div className="text-right">
+                            <div className="font-semibold">₱{(item.price * item.quantity).toFixed(2)}</div>
+                          </div>
+                          <Button
+                            variant={hasReview ? "outline" : "default"}
+                            size="sm"
+                            onClick={() => handleReviewClick(item.id, item.productId, item.product.name, item.product.image)}
+                            className="text-xs"
+                          >
+                            <Star className="w-3 h-3 mr-1" />
+                            {hasReview ? "Update Review" : "Review"}
+                          </Button>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-semibold">₱{(item.price * item.quantity).toFixed(2)}</div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
           </div>
         )}
       </main>
+
+      {/* Review Modal */}
+      {selectedProduct && (
+        <ReviewModal
+          productId={selectedProduct.id}
+          orderItemId={selectedProduct.orderItemId}
+          productName={selectedProduct.name}
+          productImage={selectedProduct.image}
+          open={reviewModalOpen}
+          onOpenChange={setReviewModalOpen}
+          onSuccess={handleReviewSuccess}
+        />
+      )}
     </div>
   );
 }

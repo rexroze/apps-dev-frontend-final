@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 import Link from "next/link";
 import React from 'react';
 import { UserMenu } from "@/components/ui/user-menu";
+import { StarRating } from "@/components/review/star-rating";
 
 
 export function ProductsClient() {
@@ -208,6 +209,18 @@ export function ProductsClient() {
                           <span className="text-lg sm:text-xl md:text-2xl font-bold text-primary">
                             ₱{product.price.toFixed(2)}
                           </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2">
+                          {(product as any).averageRating > 0 ? (
+                            <StarRating rating={(product as any).averageRating} size="sm" showValue />
+                          ) : (
+                            <span className="text-xs text-gray-400">No ratings yet</span>
+                          )}
+                          {(product as any).soldCount > 0 && (
+                            <span className="text-xs text-gray-500">
+                              {(product as any).soldCount} sold
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-gray-500">

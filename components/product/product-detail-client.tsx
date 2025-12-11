@@ -19,6 +19,9 @@ import Link from "next/link";
 import { UserMenu } from "@/components/ui/user-menu";
 import { useActiveProducts } from "@/hooks/use-active-products";
 import { useAuth } from "@/components/auth/contexts/auth-context";
+import { ReviewForm } from "@/components/review/review-form";
+import { ReviewList } from "@/components/review/review-list";
+import { StarRating } from "@/components/review/star-rating";
 
 interface ProductDetailClientProps {
   productId: string;
@@ -184,6 +187,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
             </div>
           </div>
         ) : product ? (
+          <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Product Image */}
             <div className="aspect-square bg-white rounded-lg flex items-center justify-center p-8">
@@ -260,6 +264,16 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
               </div>
             </div>
           </div>
+
+          {/* Reviews Section */}
+          <div className="mt-12 pt-8 border-t">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Reviews & Ratings</h2>
+            <ReviewForm productId={product.id} />
+            <div className="mt-8">
+              <ReviewList productId={product.id} highlightCount={3} />
+            </div>
+          </div>
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500">Product not found</p>

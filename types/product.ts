@@ -20,6 +20,9 @@ export interface ProductListResponse {
     name: string;
     email: string;
   };
+  averageRating?: number;
+  totalReviews?: number;
+  soldCount?: number;
 }
 
 export interface ProductDetailResponse {
@@ -39,6 +42,9 @@ export interface ProductDetailResponse {
     name: string;
     slug?: string;
   };
+  averageRating?: number;
+  totalReviews?: number;
+  soldCount?: number;
 }
 
 export interface CreateProductData {
