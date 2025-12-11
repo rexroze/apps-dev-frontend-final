@@ -7,8 +7,8 @@ import { useCart } from "@/components/cart/cart-context";
 import CartButton from "@/components/cart/cart-button";
 import { Spinner } from "@/components/ui/spinner";
 import { ShoppingBag, ArrowLeft, PhilippinePeso, Package, Calendar, ShoppingCart } from "lucide-react";
-import { getProductByIdService } from "@/services/product";
-import { ProductDetailResponse } from "@/types/product";
+import { getProductByIdService, getActiveProductsService } from "@/services/product";
+import { ProductDetailResponse, ProductListResponse } from "@/types/product";
 import { toast } from "sonner";
 import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
@@ -16,6 +16,9 @@ import Image from "next/image";
 import { Input } from "../ui/input";
 import SearchFilter from "@/components/ui/search-filter";
 import Link from "next/link";
+import { UserMenu } from "@/components/ui/user-menu";
+import { useActiveProducts } from "@/hooks/use-active-products";
+import { useAuth } from "@/components/auth/contexts/auth-context";
 
 interface ProductDetailClientProps {
   productId: string;
@@ -23,12 +26,21 @@ interface ProductDetailClientProps {
 
 export function ProductDetailClient({ productId }: ProductDetailClientProps) {
   const router = useRouter();
+  const { user } = useAuth();
   const [product, setProduct] = useState<ProductDetailResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [recommendations, setRecommendations] = useState<ProductListResponse[]>([]);
+  const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
 
   useEffect(() => {
     fetchProductDetail();
   }, [productId]);
+
+  useEffect(() => {
+    if (product) {
+      fetchRecommendations();
+    }
+  }, [product]);
 
   const fetchProductDetail = async () => {
     setIsLoading(true);
@@ -47,40 +59,116 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
     }
   };
 
+  const fetchRecommendations = async () => {
+    if (!product) return;
+    setIsLoadingRecommendations(true);
+    try {
+      const opts: { categoryId?: string; limit?: number } = { limit: 8 };
+      // If product has a category, get products from same category
+      if (product.categoryId) {
+        opts.categoryId = product.categoryId;
+      }
+      const response = await getActiveProductsService(opts);
+      if (response.status === "success" && response.data) {
+        // Filter out current product and limit to 6 recommendations
+        const filtered = (Array.isArray(response.data) ? response.data : [])
+          .filter((p: ProductListResponse) => p.id !== product.id)
+          .slice(0, 6);
+        setRecommendations(filtered);
+      }
+    } catch (error) {
+      console.error("Failed to fetch recommendations:", error);
+    } finally {
+      setIsLoadingRecommendations(false);
+    }
+  };
+
   const { addItem } = useCart();
 
   const handleAddToCart = () => {
     if (!product) return;
-    addItem({ id: product.id, name: product.name, price: product.price, image: product.image }, 1);
+    if (product.stock === 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
+    addItem({ 
+      id: product.id, 
+      name: product.name, 
+      price: product.price, 
+      image: product.image,
+      stock: product.stock 
+    }, 1);
     toast.success("Added to Cart");
   };
 
   const handleBuyNow = () => {
-    toast.success("Buy Now");
+    if (!product) return;
+    if (product.stock === 0) {
+      toast.error("Product is out of stock");
+      return;
+    }
+    // Check if user is authenticated
+    if (!user) {
+      toast.info("Please login to continue");
+      router.push(`/login?redirect=/checkout?productId=${product.id}&qty=1`);
+      return;
+    }
+    // Navigate to checkout
+    router.push(`/checkout?productId=${product.id}&qty=1`);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-green-900 shadow-sm border-b max-h-18">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* <ShoppingBag className="w-6 h-6 text-primary" /> */}
-              <Button
-              variant="outline"
-              className="mt-4 my-2"
-              size="sm"
-              onClick={() => router.push("/store")}
-            >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-              <h1 className="text-2xl font-bold text-yellow-500">Product Detail</h1>
+      <header className="sticky top-0 z-[100] bg-green-900 shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+          {/* Mobile Layout: Stack vertically */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push("/store")}
+                  className="h-8 px-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+                <Link href="/store" className="text-lg font-bold text-yellow-500 hover:text-yellow-400 transition-colors cursor-pointer whitespace-nowrap">
+                  TechCraftersHQ
+                </Link>
+              </div>
+              <div className="flex items-center gap-3">
+                <CartButton />
+                <UserMenu />
+              </div>
             </div>
-            <SearchFilter />
-            <div className="flex items-center gap-6">
+            <div className="w-full">
+              <SearchFilter />
+            </div>
+          </div>
+          
+          {/* Desktop Layout: Horizontal */}
+          <div className="hidden sm:flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push("/store")}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+              <Link href="/store" className="text-xl md:text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors cursor-pointer whitespace-nowrap">
+                TechCraftersHQ
+              </Link>
+            </div>
+            <div className="flex-1 max-w-2xl mx-4">
+              <SearchFilter />
+            </div>
+            <div className="flex items-center gap-4 md:gap-6 flex-shrink-0">
               <CartButton />
+              <UserMenu />
             </div>
           </div>
         </div>
@@ -115,8 +203,8 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
             {/* Product Information */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-3">{product.name}</h1>
-                <p className="text-lg text-gray-600 mb-6">{product.description}</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 break-words">{product.name}</h1>
+                <p className="text-base sm:text-lg text-gray-600 mb-6 break-words">{product.description}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -178,10 +266,47 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
             <Button
               variant="outline"
               className="mt-4"
-              onClick={() => router.push("/products")}
+              onClick={() => router.push("/store")}
             >
-              Back to Products
+              Back to Store
             </Button>
+          </div>
+        )}
+
+        {/* Product Recommendations */}
+        {product && recommendations.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">You may also like</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {recommendations.map((rec) => (
+                <div
+                  key={rec.id}
+                  className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => router.push(`/store/${rec.id}`)}
+                >
+                  <div className="aspect-square bg-white flex items-center justify-center p-2">
+                    {rec.image ? (
+                      <Image
+                        src={rec.image}
+                        alt={rec.name}
+                        width={200}
+                        height={200}
+                        className="object-contain"
+                      />
+                    ) : (
+                      <ShoppingBag className="w-12 h-12 text-gray-400" />
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">{rec.name}</h3>
+                    <p className="text-lg font-bold text-primary mb-2">₱{rec.price.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">
+                      {rec.stock > 0 ? `${rec.stock} in stock` : "Out of stock"}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </main>

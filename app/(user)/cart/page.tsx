@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from '@/components/ui/button'
-import SearchFilter from '@/components/ui/search-filter'
 import { ArrowLeft, Plus, Minus, Trash } from 'lucide-react'
 import CartButton from '@/components/cart/cart-button'
 import { useCart } from '@/components/cart/cart-context'
@@ -19,31 +18,52 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link'
 import React from 'react'
 import { toast } from 'sonner'
+import { UserMenu } from '@/components/ui/user-menu'
 
 function page() {
     const router = useRouter();
   return (
     <div>
       {/* Header */}
-      <header className="bg-green-900 shadow-sm border-b max-h-18">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* <ShoppingBag className="w-6 h-6 text-primary" /> */}
-              <Button
-              variant="outline"
-              className="mt-4 my-2"
-              size="sm"
-              onClick={() => router.push("/store")}
-            >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-              <h1 className="text-2xl font-bold text-yellow-500">My Cart</h1>
+      <header className="sticky top-0 z-[100] bg-green-900 shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
+          {/* Mobile Layout: Stack vertically */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push("/store")}
+                  className="h-8 px-2"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+                <h1 className="text-lg font-bold text-yellow-500 whitespace-nowrap">My Cart</h1>
+              </div>
+              <div className="flex items-center gap-3">
+                <CartButton />
+                <UserMenu />
+              </div>
             </div>
-            <SearchFilter />
-            <div className="flex items-center gap-6">
+          </div>
+          
+          {/* Desktop Layout: Horizontal */}
+          <div className="hidden sm:flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push("/store")}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+              <h1 className="text-xl md:text-2xl font-bold text-yellow-500 whitespace-nowrap">My Cart</h1>
+            </div>
+            <div className="flex items-center gap-4 md:gap-6 flex-shrink-0 ml-auto">
               <CartButton />
+              <UserMenu />
             </div>
           </div>
         </div>
@@ -56,6 +76,7 @@ function page() {
 }
 
 function CartContents() {
+  const router = useRouter();
   const { items, count, updateQuantity, removeItem, clear, addItem } = useCart();
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const [removeId, setRemoveId] = React.useState<string | null>(null);
@@ -148,18 +169,22 @@ function CartContents() {
         </div>
 
         <div className="space-y-3">
-          {items.map((it) => (
-            <div key={it.id} className="flex items-center gap-4 bg-white p-4 rounded-md border">
+          {items.map((it) => {
+            const isOutOfStock = it.stock !== undefined && it.stock === 0;
+            return (
+            <div key={it.id} className={`flex items-center gap-4 bg-white p-4 rounded-md border ${isOutOfStock ? 'opacity-60' : ''}`}>
               <input
                 type="checkbox"
                 checked={selected.has(it.id)}
+                disabled={isOutOfStock}
                 onChange={(e) => {
+                  if (isOutOfStock) return;
                   const next = new Set(selected);
                   if (e.target.checked) next.add(it.id);
                   else next.delete(it.id);
                   setSelected(next);
                 }}
-                className="cursor-pointer"
+                className={isOutOfStock ? 'cursor-not-allowed' : 'cursor-pointer'}
               />
               {it.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -167,14 +192,21 @@ function CartContents() {
               ) : (
                 <div className="w-20 h-20 bg-gray-100" />
               )}
-              <div className="flex-1">
-                <div className="font-medium">{it.name}</div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium truncate">{it.name}</div>
                 <div className="text-sm text-gray-600">₱{it.price.toFixed(2)}</div>
+                {it.stock !== undefined && (
+                  <div className={`text-xs mt-1 ${it.stock === 0 ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>
+                    {it.stock === 0 ? 'Out of Stock' : `${it.stock} available`}
+                  </div>
+                )}
                 <div className="mt-2 flex items-center gap-2">
                   <button
                     aria-label={`Decrease ${it.name}`}
-                    className="p-1 border rounded cursor-pointer"
+                    className={`p-1 border rounded ${it.stock === 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    disabled={it.stock === 0}
                     onClick={() => {
+                      if (it.stock === 0) return;
                       if (it.quantity <= 1) {
                         // ask for confirmation instead of immediate remove
                         setRemoveId(it.id);
@@ -190,22 +222,30 @@ function CartContents() {
                     type="number"
                     value={it.quantity}
                     min={0}
+                    max={it.stock !== undefined ? it.stock : undefined}
+                    disabled={it.stock === 0}
                     onChange={(e) => {
+                      if (it.stock === 0) return;
                       const val = Math.max(0, Number(e.target.value) || 0);
-                      if (val === 0) {
+                      const maxVal = it.stock !== undefined ? Math.min(val, it.stock) : val;
+                      if (maxVal === 0) {
                         // ask for confirmation instead of immediate remove
                         setRemoveId(it.id);
                       } else {
-                        updateQuantity(it.id, val);
+                        updateQuantity(it.id, maxVal);
                       }
                     }}
-                    className="w-20 p-1 border rounded text-center"
+                    className={`w-20 p-1 border rounded text-center ${it.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
 
                   <button
                     aria-label={`Increase ${it.name}`}
-                    className="p-1 border rounded cursor-pointer"
-                    onClick={() => updateQuantity(it.id, it.quantity + 1)}
+                    className={`p-1 border rounded ${it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    disabled={it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock)}
+                    onClick={() => {
+                      if (it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock)) return;
+                      updateQuantity(it.id, it.quantity + 1);
+                    }}
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -246,7 +286,8 @@ function CartContents() {
                 <div className="text-lg font-semibold">₱{(it.price * it.quantity).toFixed(2)}</div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -273,38 +314,15 @@ function CartContents() {
 
         <button
           className="w-full bg-primary text-white py-2 rounded-md disabled:opacity-60"
-          disabled={selected.size === 0 || isCheckingOut}
-          onClick={async () => {
-            setIsCheckingOut(true);
-            try {
-              // Call a dummy checkout endpoint in the frontend app
-              const selectedItems = items.filter((it) => selected.has(it.id));
-              const res = await fetch("/api/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ items: selectedItems }),
-              });
-              if (res.ok) {
-                // For now just clear the cart and show success
-                // remove only selected items from cart
-                selectedItems.forEach((si) => removeItem(si.id));
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                const { toast } = require("sonner");
-                toast.success("Checkout (dummy) successful");
-              } else {
-                const { toast } = require("sonner");
-                toast.error("Checkout failed");
-              }
-            } catch (err) {
-              // eslint-disable-next-line @typescript-eslint/no-var-requires
-              const { toast } = require("sonner");
-              toast.error("Checkout error");
-            } finally {
-              setIsCheckingOut(false);
-            }
+          disabled={selected.size === 0 || isCheckingOut || items.some(it => selected.has(it.id) && it.stock === 0)}
+          onClick={() => {
+            const selectedItems = items.filter((it) => selected.has(it.id));
+            // Store selected items in sessionStorage for checkout page
+            sessionStorage.setItem("checkoutItems", JSON.stringify(selectedItems));
+            router.push("/checkout");
           }}
         >
-          {isCheckingOut ? "Processing..." : "Checkout (Dummy)"}
+          Proceed to Checkout
         </button>
       </aside>
     </div>

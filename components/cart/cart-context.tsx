@@ -8,6 +8,7 @@ export interface CartItem {
   price: number;
   quantity: number;
   image?: string | null;
+  stock?: number; // Add stock information
 }
 
 interface CartContextValue {
@@ -44,10 +45,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((prev) => {
       const idx = prev.findIndex((p) => p.id === item.id);
       if (idx === -1) {
-        return [...prev, { ...item, quantity: qty }];
+        // Check stock limit when adding new item
+        const maxQty = item.stock !== undefined ? Math.min(qty, item.stock) : qty;
+        return [...prev, { ...item, quantity: maxQty }];
       }
       const copy = [...prev];
-      copy[idx] = { ...copy[idx], quantity: copy[idx].quantity + qty };
+      const currentItem = copy[idx];
+      // Check stock limit when increasing quantity
+      const maxQty = currentItem.stock !== undefined 
+        ? Math.min(currentItem.quantity + qty, currentItem.stock) 
+        : currentItem.quantity + qty;
+      copy[idx] = { ...copy[idx], quantity: maxQty };
       return copy;
     });
   };
@@ -55,7 +63,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeItem = (id: string) => setItems((prev) => prev.filter((p) => p.id !== id));
 
   const updateQuantity = (id: string, quantity: number) => {
-    setItems((prev) => prev.map((p) => (p.id === id ? { ...p, quantity } : p)));
+    setItems((prev) => prev.map((p) => {
+      if (p.id === id) {
+        // Enforce stock limit
+        const maxQty = p.stock !== undefined ? Math.min(quantity, p.stock) : quantity;
+        return { ...p, quantity: Math.max(0, maxQty) };
+      }
+      return p;
+    }));
   };
 
   const clear = () => setItems([]);

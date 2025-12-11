@@ -16,6 +16,7 @@ export const createProductValidator = z.object({
   image: z.string().min(1, {
     message: "Image URL is required.",
   }),
+  categoryId: z.string().optional(),
 });
 
 export type CreateProductSchema = z.infer<typeof createProductValidator>;

@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem} from "@/components/ui/select";
 import { Settings, LogOut, AlertCircle } from "lucide-react";
+import { UserMenu } from "@/components/ui/user-menu";
+import Link from "next/link";
 import { useProducts } from "@/hooks/use-products";
 import { ProductTable } from "./product-table";
 import { AddProductModal } from "./add-product-modal";
@@ -64,15 +66,27 @@ export function AdminProductsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Settings className="w-6 h-6 text-secondary" />
+                <Link 
+                  href="/admin/products"
+                  className="p-1.5 rounded-md hover:bg-green-800 transition-all duration-200 group cursor-pointer"
+                  aria-label="Go to admin products"
+                >
+                  <Settings className="w-6 h-6 text-secondary group-hover:text-yellow-400 group-hover:rotate-90 transition-all duration-200" />
+                </Link>
+                <Link href="/store" className="text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors">
+                  TechCraftersHQ
+                </Link>
+                <span className="text-white">/</span>
                 <h1 className="text-2xl font-bold text-yellow-500">Product Management</h1>
               </div>
               <div className="flex items-center gap-6">
-                <span className="text-sm text-white">Admin: {user?.name}</span>
-                <Button variant="outline" size="sm" onClick={logout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                <span className="hidden lg:inline">Logout</span>  
-              </Button>
+                <Link href="/admin/categories">
+                  <Button variant="outline" size="sm">Categories</Button>
+                </Link>
+                <Link href="/admin/sales">
+                  <Button variant="outline" size="sm">Sales</Button>
+                </Link>
+                <UserMenu />
               </div>
             </div>
           </div>

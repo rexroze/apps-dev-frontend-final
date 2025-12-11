@@ -15,6 +15,7 @@ import { ProductListResponse } from "@/types/product";
 import { toast } from "sonner";
 import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
+import { api } from "@/lib/axios";
 
 interface UpdateProductModalProps {
   product: ProductListResponse | null;
@@ -34,6 +35,8 @@ export function UpdateProductModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<boolean>(true);
 
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+
   const form = useForm<CreateProductSchema>({
     resolver: zodResolver(createProductValidator),
     defaultValues: {
@@ -42,8 +45,21 @@ export function UpdateProductModal({
       price: 0,
       stock: 0,
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvRcHRFoxR9VoZGcStde7VBG9S8ndG7TVQlQ&s",
+      categoryId: undefined,
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      api.get("/api/category/v1/categories")
+        .then((res) => {
+          if (res?.data?.status === "success" && Array.isArray(res.data.data)) {
+            setCategories(res.data.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [open]);
 
   // Update form and status when product changes
   useEffect(() => {
@@ -54,6 +70,7 @@ export function UpdateProductModal({
         price: product.price,
         stock: product.stock,
         image: product.image,
+        categoryId: product.categoryId || undefined,
       });
       setStatus(product.isActive);
     }
@@ -185,12 +202,41 @@ export function UpdateProductModal({
 
             <FormField
               control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category (Optional)</FormLabel>
+                  <Select 
+                    onValueChange={(value) => field.onChange(value === "none" ? undefined : value)} 
+                    value={field.value || "none"}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">No Category</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="image"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvRcHRFoxR9VoZGcStde7VBG9S8ndG7TVQlQ&s" {...field} />
+                    <Input placeholder="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvRcHRFoxR9VoZGcStde7TVQlQ&s" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

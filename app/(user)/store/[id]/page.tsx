@@ -1,4 +1,3 @@
-import { ProtectedRoute } from "@/components/auth/protected-route";
 import { ProductDetailClient } from "@/components/product/product-detail-client";
 
 interface ProductDetailPageProps {
@@ -8,9 +7,6 @@ interface ProductDetailPageProps {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { id } = await params;
 
-  return (
-    <ProtectedRoute>
-      <ProductDetailClient productId={id} />
-    </ProtectedRoute>
-  );
+  // Product detail page is now publicly accessible - no authentication required
+  return <ProductDetailClient productId={id} />;
 }

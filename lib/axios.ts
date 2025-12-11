@@ -87,15 +87,18 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem("refreshToken");
 
         if (!refreshToken) {
-          // No refresh token, clear everything and redirect to login
+          // No refresh token, clear everything
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("user");
           processQueue(error, null);
           isRefreshing = false;
           
-          // Redirect to login if we're in the browser
-          if (window.location.pathname !== "/login") {
+          // Only redirect to login for protected routes, not public routes like /store
+          const publicRoutes = ["/store", "/", "/login", "/signup"];
+          const isPublicRoute = publicRoutes.some(route => window.location.pathname.startsWith(route));
+          
+          if (!isPublicRoute && window.location.pathname !== "/login") {
             window.location.href = "/login";
           }
           return Promise.reject(error);
@@ -142,16 +145,21 @@ api.interceptors.response.use(
             throw new Error("Invalid refresh token response");
           }
         } catch (refreshError) {
-          // Refresh failed, clear tokens and redirect to login
+          // Refresh failed, clear tokens
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           localStorage.removeItem("user");
           processQueue(refreshError as AxiosError, null);
           isRefreshing = false;
 
-          // Redirect to login if we're in the browser
-          if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-            window.location.href = "/login";
+          // Only redirect to login for protected routes, not public routes like /store
+          if (typeof window !== "undefined") {
+            const publicRoutes = ["/store", "/", "/login", "/signup"];
+            const isPublicRoute = publicRoutes.some(route => window.location.pathname.startsWith(route));
+            
+            if (!isPublicRoute && window.location.pathname !== "/login") {
+              window.location.href = "/login";
+            }
           }
 
           return Promise.reject(refreshError);

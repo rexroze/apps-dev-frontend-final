@@ -9,6 +9,12 @@ export interface ProductListResponse {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  categoryId?: string;
+  category?: {
+    id: string;
+    name: string;
+    slug?: string;
+  };
   user?: {
     id: string;
     name: string;
@@ -27,6 +33,12 @@ export interface ProductDetailResponse {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  categoryId?: string;
+  category?: {
+    id: string;
+    name: string;
+    slug?: string;
+  };
 }
 
 export interface CreateProductData {
@@ -36,6 +48,7 @@ export interface CreateProductData {
   price: number;
   stock: number;
   image: string;
+  categoryId?: string;
 }
 
 export interface UpdateProductData {
@@ -46,4 +59,5 @@ export interface UpdateProductData {
   price: number;
   stock: number;
   image: string;
+  categoryId?: string;
 }

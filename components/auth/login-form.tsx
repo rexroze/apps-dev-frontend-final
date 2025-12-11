@@ -52,8 +52,12 @@ export function LoginForm() {
 
         toast.success(response.message || "Login successful");
         
-        // Redirect based on user role
-        const redirectPath = getRedirectPathByRole(response.data.user);
+        // Check for redirect query parameter first
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectParam = urlParams.get("redirect");
+        
+        // Redirect based on redirect param or user role
+        const redirectPath = redirectParam || getRedirectPathByRole(response.data.user);
         router.push(redirectPath);
         form.reset();
       }

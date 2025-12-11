@@ -3,8 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
-
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props {
   initialSearch?: string;
@@ -22,7 +28,7 @@ export function SearchFilter({ initialSearch = "", initialCategoryId, onChange, 
   useEffect(() => {
     let mounted = true;
     api
-      .get("/category/v1/categories")
+      .get("/api/category/v1/categories")
       .then((res) => {
         if (!mounted) return;
         if (res?.data?.status === "success" && Array.isArray(res.data.data)) {
@@ -36,6 +42,9 @@ export function SearchFilter({ initialSearch = "", initialCategoryId, onChange, 
   }, []);
 
   const router = useRouter();
+
+  // Convert categoryId to Select value (use "all" for undefined/empty)
+  const selectValue = categoryId || "all";
 
   // Debounce search updates
   useEffect(() => {
@@ -52,29 +61,38 @@ export function SearchFilter({ initialSearch = "", initialCategoryId, onChange, 
       }
     }, 300);
     return () => clearTimeout(t);
-  }, [search, categoryId, onChange]);
+  }, [search, categoryId, onChange, redirectToStore, router]);
+
+  const handleCategoryChange = (value: string) => {
+    // Convert "all" back to undefined
+    setCategoryId(value === "all" ? undefined : value);
+  };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-row items-center gap-2 w-full">
       <Input
         placeholder="Search..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="max-w-xl bg-white rounded-full m-4 p-4"
+        className="flex-1 bg-white rounded-full sm:rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 h-9"
       />
 
-      <select
-        value={categoryId ?? ""}
-        onChange={(e) => setCategoryId(e.target.value || undefined)}
-        className="rounded-md bg-white p-2 text-sm"
+      <Select
+        value={selectValue}
+        onValueChange={handleCategoryChange}
       >
-        <option value="">All Categories</option>
-        {categories.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.name}
-          </option>
-        ))}
-      </select>
+        <SelectTrigger className="bg-white border-gray-300 focus:ring-2 focus:ring-yellow-500 h-9 w-[120px] sm:w-[160px] md:w-[180px] flex-shrink-0 text-sm">
+          <SelectValue placeholder="Category" />
+        </SelectTrigger>
+        <SelectContent className="max-h-[300px]">
+          <SelectItem value="all">All Categories</SelectItem>
+          {categories.map((c) => (
+            <SelectItem key={c.id} value={c.id}>
+              {c.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

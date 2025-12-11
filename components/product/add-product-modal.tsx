@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import { createProductService } from "@/services/product";
 import { toast } from "sonner";
 import { apiErrorHandler } from "@/lib/axios";
 import { AxiosError } from "axios";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { api } from "@/lib/axios";
 
 interface AddProductModalProps {
   userId: string;
@@ -23,6 +25,7 @@ interface AddProductModalProps {
 export function AddProductModal({ userId, onSuccess }: AddProductModalProps) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
 
   const form = useForm<CreateProductSchema>({
     resolver: zodResolver(createProductValidator),
@@ -32,8 +35,21 @@ export function AddProductModal({ userId, onSuccess }: AddProductModalProps) {
       price: 0,
       stock: 0,
       image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvRcHRFoxR9VoZGcStde7VBG9S8ndG7TVQlQ&s",
+      categoryId: undefined,
     },
   });
+
+  useEffect(() => {
+    if (open) {
+      api.get("/api/category/v1/categories")
+        .then((res) => {
+          if (res?.data?.status === "success" && Array.isArray(res.data.data)) {
+            setCategories(res.data.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [open]);
 
   async function onSubmit(values: CreateProductSchema) {
     try {
@@ -144,12 +160,76 @@ export function AddProductModal({ userId, onSuccess }: AddProductModalProps) {
 
             <FormField
               control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category (Optional)</FormLabel>
+                  <Select 
+                    onValueChange={(value) => field.onChange(value === "none" ? undefined : value)} 
+                    value={field.value || "none"}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">No Category</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="image"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image URL</FormLabel>
+                  <FormLabel>Image (URL or Upload)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://via.placeholder.com/400" {...field} />
+                    <div className="space-y-2">
+                      <Input 
+                        placeholder="https://via.placeholder.com/400" 
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          // Clear file input if URL is entered
+                          const fileInput = document.getElementById('image-upload-add') as HTMLInputElement;
+                          if (fileInput) fileInput.value = '';
+                        }}
+                      />
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500">OR</span>
+                        <Input
+                          id="image-upload-add"
+                          type="file"
+                          accept="image/*"
+                          className="text-sm"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                field.onChange(reader.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </div>
+                      {field.value && (
+                        <div className="mt-2">
+                          <img src={field.value} alt="Preview" className="w-32 h-32 object-contain border rounded" />
+                        </div>
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

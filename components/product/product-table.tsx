@@ -39,6 +39,9 @@ export function ProductTable({ products, onDelete, onEdit }: ProductTableProps) 
               Stock
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Category
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -63,6 +66,11 @@ export function ProductTable({ products, onDelete, onEdit }: ProductTableProps) 
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">{product.stock}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-900">
+                  {product.category?.name || "No Category"}
+                </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div
