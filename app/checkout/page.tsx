@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getProductByIdService } from "@/services/product";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useAuth } from "@/components/auth/contexts/auth-context";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { useCart, CartItem } from "@/components/cart/cart-context";
 import Image from "next/image";
+import { Spinner } from "@/components/ui/spinner";
 
 function CheckoutPageContent() {
   const search = useSearchParams();
@@ -188,11 +189,24 @@ function CheckoutPageContent() {
   );
 }
 
+function CheckoutPageWrapper() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center gap-4 min-h-[400px]">
+        <Spinner className="w-8 h-8" />
+        <p className="text-sm text-gray-600">Loading...</p>
+      </div>
+    }>
+      <CheckoutPageContent />
+    </Suspense>
+  );
+}
+
 export default function CheckoutPage() {
   // Checkout requires authentication
   return (
     <ProtectedRoute>
-      <CheckoutPageContent />
+      <CheckoutPageWrapper />
     </ProtectedRoute>
   );
 }

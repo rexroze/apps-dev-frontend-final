@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { exchangeOAuthCode } from "@/services/auth";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ import Link from "next/link";
 import { getRedirectPathByRole } from "@/lib/auth-utils";
 import { useAuth } from "@/components/auth/contexts/auth-context";
 
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { login } = useAuth();
@@ -124,5 +124,18 @@ export default function OAuthCallbackPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center gap-4 min-h-[400px]">
+        <Spinner className="w-8 h-8" />
+        <p className="text-sm text-gray-600">Loading...</p>
+      </div>
+    }>
+      <OAuthCallbackContent />
+    </Suspense>
   );
 }
