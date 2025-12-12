@@ -58,12 +58,14 @@ export const refreshTokenService = async (refreshToken: string) => {
 };
 
 export const initiateOAuth = (provider: "google" | "github") => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  // Normalize API URL - remove trailing slash if present
+  const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/+$/, "");
   const redirectUrl = typeof window !== "undefined" 
     ? `${window.location.origin}/oauth-callback`
     : "";
   
   // Include redirect URL as query parameter for backend to redirect back
+  // Ensure single slash between apiUrl and path
   const oauthUrl = `${apiUrl}/api/auth/v1/${provider}${redirectUrl ? `?redirect=${encodeURIComponent(redirectUrl)}` : ""}`;
   window.location.href = oauthUrl;
 };

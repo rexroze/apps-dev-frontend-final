@@ -11,8 +11,11 @@ The api is used to make the requests to the backend.
 
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
+// Normalize API URL - remove trailing slash if present
+const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/+$/, "");
+
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
+  baseURL: apiUrl,
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json",
