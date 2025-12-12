@@ -25,12 +25,7 @@ export default function AvatarDropdown() {
         aria-expanded={open}
         className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-sm font-semibold border"
       >
-        {user?.image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={user.image} alt={user.name || "avatar"} className="w-10 h-10 rounded-full object-cover" />
-        ) : (
-          <span>{initials}</span>
-        )}
+        <span>{initials}</span>
       </button>
 
       {open && (
