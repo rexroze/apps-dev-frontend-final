@@ -160,18 +160,18 @@ export function AdminCategoriesPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-300">
+                <thead className="bg-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Slug</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-gray-100 divide-y divide-gray-300">
                   {categories.map((category) => (
                     <tr key={category.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{category.name}</td>
@@ -208,7 +208,7 @@ export function AdminCategoriesPage() {
         {/* Create Modal */}
         {isCreateModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="bg-gray-100 rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold mb-4">Create Category</h3>
               <div className="space-y-4">
                 <div>
@@ -244,7 +244,7 @@ export function AdminCategoriesPage() {
         {/* Edit Modal */}
         {isEditModalOpen && editingCategory && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="bg-gray-100 rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold mb-4">Edit Category</h3>
               <div className="space-y-4">
                 <div>
@@ -281,7 +281,7 @@ export function AdminCategoriesPage() {
         {/* Delete Confirmation Modal */}
         {deleteConfirmOpen && deletingCategory && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="bg-gray-100 rounded-lg p-6 max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold mb-4">Delete Category</h3>
               <p className="text-gray-600 mb-6">
                 Are you sure you want to delete "{deletingCategory.name}"? This action cannot be undone.

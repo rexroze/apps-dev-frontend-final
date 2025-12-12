@@ -24,32 +24,32 @@ export function ProductTable({ products, onDelete, onEdit }: ProductTableProps) 
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
-        <thead className="bg-gray-50 border-b border-gray-200">
+        <thead className="bg-gray-200 border-b border-gray-300">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Product
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Description
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Price
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Stock
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Category
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Status
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-gray-100 divide-y divide-gray-300">
           {products.map((product) => (
             <tr key={product.id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap">

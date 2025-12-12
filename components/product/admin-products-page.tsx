@@ -125,7 +125,7 @@ export function AdminProductsPage() {
 
           {/* Products Table */}
           {!isLoading && (
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <ProductTable
                 products={filteredProducts}
                 onDelete={handleDelete}
@@ -161,17 +161,17 @@ export function AdminProductsPage() {
           {/* Summary */}
           {!isLoading && (
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="text-sm text-gray-600">Total Products</div>
                 <div className="text-2xl font-bold text-gray-900">{products.length}</div>
               </div>
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="text-sm text-gray-600">Active Products</div>
                 <div className="text-2xl font-bold text-green-600">
                   {products.filter((product) => product.isActive).length}
                 </div>
               </div>
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 p-4">
                 <div className="text-sm text-gray-600">Total Stock</div>
                 <div className="text-2xl font-bold text-gray-900">
                   {products.reduce((sum, product) => sum + product.stock, 0)}

@@ -199,7 +199,7 @@ export function AdminSalesPage() {
       <AdminLayout title="Sales History">
           {/* Statistics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-gray-600">Total Revenue</p>
@@ -213,7 +213,7 @@ export function AdminSalesPage() {
                 <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-gray-600">Total Orders</p>
@@ -222,7 +222,7 @@ export function AdminSalesPage() {
                 <Package className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-gray-600">Avg Order Value</p>
@@ -231,7 +231,7 @@ export function AdminSalesPage() {
                 <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-gray-600">Total Items Sold</p>
@@ -252,7 +252,7 @@ export function AdminSalesPage() {
 
               {/* Revenue and Orders Over Time */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Revenue Over Time</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <AreaChart data={revenueOverTime}>
@@ -294,7 +294,7 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Orders Over Time</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={revenueOverTime}>
@@ -332,7 +332,7 @@ export function AdminSalesPage() {
 
               {/* Top Products and Revenue by Day */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Top Selling Products</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={topProducts} layout="vertical">
@@ -368,7 +368,7 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Revenue by Day of Week</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={revenueByDay}>
@@ -425,7 +425,7 @@ export function AdminSalesPage() {
           ) : (
             <div className="space-y-4">
               {orders.map((order) => (
-                <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+                <div key={order.id} className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 pb-4 border-b">
                     <div>
                       <div className="text-xs sm:text-sm text-gray-500">Order ID</div>

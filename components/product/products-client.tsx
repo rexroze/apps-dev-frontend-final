@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, LogOut, User, AlertCircle, ShoppingCart } from "lucide-react";
@@ -20,10 +20,30 @@ import { StarRating } from "@/components/review/star-rating";
 
 export function ProductsClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, logout } = useAuth();
-  const [search, setSearch] = React.useState<string | undefined>(undefined);
-  const [categoryId, setCategoryId] = React.useState<string | undefined>(undefined);
+  
+  // Read initial values from URL params
+  const urlSearch = searchParams.get("search") || undefined;
+  const urlCategoryId = searchParams.get("categoryId") || undefined;
+  
+  const [search, setSearch] = React.useState<string | undefined>(urlSearch);
+  const [categoryId, setCategoryId] = React.useState<string | undefined>(urlCategoryId);
   const { products, isLoading, isError, error, mutate } = useActiveProducts({ search, categoryId });
+
+  // Sync state with URL params when they change
+  React.useEffect(() => {
+    const newSearch = searchParams.get("search") || undefined;
+    const newCategoryId = searchParams.get("categoryId") || undefined;
+    
+    if (newSearch !== search) {
+      setSearch(newSearch);
+    }
+    if (newCategoryId !== categoryId) {
+      setCategoryId(newCategoryId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleProductClick = (productId: string) => {
     router.push(`/store/${productId}`);
@@ -88,11 +108,17 @@ export function ProductsClient() {
             </div>
             <div className="w-full">
               <SearchFilter
-                initialSearch=""
-                initialCategoryId={undefined}
+                initialSearch={urlSearch || ""}
+                initialCategoryId={urlCategoryId}
                 onChange={({ search, categoryId }) => {
                   setSearch(search);
                   setCategoryId(categoryId);
+                  // Update URL without navigation
+                  const params = new URLSearchParams();
+                  if (search) params.set("search", search);
+                  if (categoryId) params.set("categoryId", categoryId);
+                  const qs = params.toString();
+                  router.replace(`/store${qs ? `?${qs}` : ""}`, { scroll: false });
                 }}
                 redirectToStore={false}
               />
@@ -108,11 +134,17 @@ export function ProductsClient() {
             </div>
             <div className="flex-1 max-w-2xl mx-4">
               <SearchFilter
-                initialSearch=""
-                initialCategoryId={undefined}
+                initialSearch={urlSearch || ""}
+                initialCategoryId={urlCategoryId}
                 onChange={({ search, categoryId }) => {
                   setSearch(search);
                   setCategoryId(categoryId);
+                  // Update URL without navigation
+                  const params = new URLSearchParams();
+                  if (search) params.set("search", search);
+                  if (categoryId) params.set("categoryId", categoryId);
+                  const qs = params.toString();
+                  router.replace(`/store${qs ? `?${qs}` : ""}`, { scroll: false });
                 }}
                 redirectToStore={false}
               />

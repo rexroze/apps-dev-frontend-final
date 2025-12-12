@@ -24,6 +24,15 @@ export function SearchFilter({ initialSearch = "", initialCategoryId, onChange, 
   const [categoryId, setCategoryId] = useState<string | undefined>(initialCategoryId);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
 
+  // Sync with initial props when they change
+  useEffect(() => {
+    setSearch(initialSearch);
+  }, [initialSearch]);
+
+  useEffect(() => {
+    setCategoryId(initialCategoryId);
+  }, [initialCategoryId]);
+
   // Fetch categories once
   useEffect(() => {
     let mounted = true;
@@ -65,7 +74,10 @@ export function SearchFilter({ initialSearch = "", initialCategoryId, onChange, 
 
   const handleCategoryChange = (value: string) => {
     // Convert "all" back to undefined
-    setCategoryId(value === "all" ? undefined : value);
+    const newCategoryId = value === "all" ? undefined : value;
+    setCategoryId(newCategoryId);
+    // Immediately call onChange for category changes (no debounce)
+    onChange?.({ search: search || undefined, categoryId: newCategoryId });
   };
 
   return (
