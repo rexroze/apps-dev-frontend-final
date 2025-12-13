@@ -65,17 +65,17 @@ export function AdminProductsPage() {
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center gap-4">
                 <Spinner className="w-8 h-8" />
-                <p className="text-sm text-gray-600">Loading products...</p>
+                <p className="text-sm text-muted-foreground">Loading products...</p>
               </div>
             </div>
           )}
 
           {/* Error State */}
           {!isLoading && isError && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-                <p className="text-sm text-red-600">
+                <AlertCircle className="w-5 h-5 text-destructive" />
+                <p className="text-sm text-destructive">
                   {error?.message || "Failed to fetch products"}
                 </p>
                 <Button 
@@ -125,7 +125,7 @@ export function AdminProductsPage() {
 
           {/* Products Table */}
           {!isLoading && (
-            <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
               <ProductTable
                 products={filteredProducts}
                 onDelete={handleDelete}

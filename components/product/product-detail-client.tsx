@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart/cart-context";
 import CartButton from "@/components/cart/cart-button";
+import WishlistButton from "@/components/wishlist/wishlist-button";
 import { Spinner } from "@/components/ui/spinner";
 import { ShoppingBag, ArrowLeft, PhilippinePeso, Package, Calendar, ShoppingCart } from "lucide-react";
 import { getProductByIdService, getActiveProductsService } from "@/services/product";
@@ -121,9 +122,9 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-[100] bg-green-900 shadow-sm border-b">
+      <header className="sticky top-0 z-[100] bg-green-900 dark:bg-green-950 shadow-sm border-b border-green-800 dark:border-green-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
           {/* Mobile Layout: Stack vertically */}
           <div className="flex flex-col gap-3 sm:hidden">
@@ -137,11 +138,12 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
-                <Link href="/store" className="text-lg font-bold text-yellow-500 hover:text-yellow-400 transition-colors cursor-pointer whitespace-nowrap">
+                <Link href="/store" className="text-lg font-bold text-yellow-500 dark:text-yellow-400 hover:text-yellow-400 dark:hover:text-yellow-300 transition-colors cursor-pointer whitespace-nowrap">
                   TechCraftersHQ
                 </Link>
               </div>
               <div className="flex items-center gap-3">
+                <WishlistButton />
                 <CartButton />
                 <UserMenu />
               </div>
@@ -162,7 +164,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-              <Link href="/store" className="text-xl md:text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors cursor-pointer whitespace-nowrap">
+              <Link href="/store" className="text-xl md:text-2xl font-bold text-yellow-500 dark:text-yellow-400 hover:text-yellow-400 dark:hover:text-yellow-300 transition-colors cursor-pointer whitespace-nowrap">
                 TechCraftersHQ
               </Link>
             </div>
@@ -170,6 +172,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
               <SearchFilter />
             </div>
             <div className="flex items-center gap-4 md:gap-6 flex-shrink-0">
+              <WishlistButton />
               <CartButton />
               <UserMenu />
             </div>
@@ -183,14 +186,14 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
           <div className="flex items-center justify-center py-12">
             <div className="flex flex-col items-center gap-4">
               <Spinner className="w-8 h-8" />
-              <p className="text-sm text-gray-600">Loading product details...</p>
+              <p className="text-sm text-muted-foreground">Loading product details...</p>
             </div>
           </div>
         ) : product ? (
           <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Product Image */}
-            <div className="aspect-square bg-white rounded-lg flex items-center justify-center p-8">
+            <div className="aspect-square bg-card rounded-lg border border-border flex items-center justify-center p-8">
               {product.image ? (
                 <Image
                   src={product.image}
@@ -200,40 +203,40 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                   className="object-contain rounded-lg"
                 />
               ) : (
-                <ShoppingBag className="w-32 h-32 text-gray-400" />
+                <ShoppingBag className="w-32 h-32 text-muted-foreground" />
               )}
             </div>
 
             {/* Product Information */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 break-words">{product.name}</h1>
-                <p className="text-base sm:text-lg text-gray-600 mb-6 break-words">{product.description}</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 break-words">{product.name}</h1>
+                <p className="text-base sm:text-lg text-muted-foreground mb-6 break-words">{product.description}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border border-border">
                   <PhilippinePeso className="w-5 h-5 text-primary" />
                   <div>
-                    <p className="text-sm text-gray-600">Price</p>
-                    <p className="text-2xl font-bold text-gray-900">₱{product.price.toFixed(2)}</p>
+                    <p className="text-sm text-muted-foreground">Price</p>
+                    <p className="text-2xl font-bold text-foreground">₱{product.price.toFixed(2)}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border border-border">
                   <Package className="w-5 h-5 text-primary" />
                   <div>
-                    <p className="text-sm text-gray-600">Stock</p>
-                    <p className="text-2xl font-bold text-gray-900">{product.stock} units</p>
+                    <p className="text-sm text-muted-foreground">Stock</p>
+                    <p className="text-2xl font-bold text-foreground">{product.stock} units</p>
                   </div>
                 </div>
               </div>
 
-              {/* <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+              {/* <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border border-border">
                 <Calendar className="w-5 h-5 text-primary" />
                 <div>
-                  <p className="text-sm text-gray-600">Created</p>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm text-muted-foreground">Created</p>
+                  <p className="text-sm font-medium text-foreground">
                     {new Date(product.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -243,7 +246,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                 </div>
               </div> */}
 
-              <div className="pt-4 border-t space-y-3">
+              <div className="pt-4 border-t border-border space-y-3">
                 <Button
                   className="w-full"
                   size="lg"
@@ -266,8 +269,8 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
           </div>
 
           {/* Reviews Section */}
-          <div className="mt-12 pt-8 border-t">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Reviews & Ratings</h2>
+          <div className="mt-12 pt-8 border-t border-border">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Reviews & Ratings</h2>
             <ReviewForm productId={product.id} />
             <div className="mt-8">
               <ReviewList productId={product.id} highlightCount={3} />
@@ -276,7 +279,7 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
           </>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-500">Product not found</p>
+            <p className="text-muted-foreground">Product not found</p>
             <Button
               variant="outline"
               className="mt-4"
@@ -290,15 +293,15 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
         {/* Product Recommendations */}
         {product && recommendations.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">You may also like</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">You may also like</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
               {recommendations.map((rec) => (
                 <div
                   key={rec.id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                  className="bg-card rounded-lg shadow-sm border border-border overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => router.push(`/store/${rec.id}`)}
                 >
-                  <div className="aspect-square bg-white flex items-center justify-center p-2">
+                  <div className="aspect-square bg-muted/30 flex items-center justify-center p-2">
                     {rec.image ? (
                       <Image
                         src={rec.image}
@@ -308,13 +311,13 @@ export function ProductDetailClient({ productId }: ProductDetailClientProps) {
                         className="object-contain"
                       />
                     ) : (
-                      <ShoppingBag className="w-12 h-12 text-gray-400" />
+                      <ShoppingBag className="w-12 h-12 text-muted-foreground" />
                     )}
                   </div>
                   <div className="p-3">
-                    <h3 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">{rec.name}</h3>
+                    <h3 className="font-semibold text-sm text-card-foreground mb-1 line-clamp-2">{rec.name}</h3>
                     <p className="text-lg font-bold text-primary mb-2">₱{rec.price.toFixed(2)}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {rec.stock > 0 ? `${rec.stock} in stock` : "Out of stock"}
                     </p>
                   </div>

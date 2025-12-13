@@ -1,9 +1,8 @@
 import { Suspense } from "react";
-import { ProductsClient } from "@/components/product/products-client";
+import { WishlistClient } from "@/components/wishlist/wishlist-client";
 import { Spinner } from "@/components/ui/spinner";
 
-export default function ProductsPage() {
-  // Store page is now publicly accessible - no authentication required
+export default function WishlistPage() {
   return (
     <Suspense fallback={
       <div className="flex flex-col items-center justify-center gap-4 min-h-[400px]">
@@ -11,7 +10,8 @@ export default function ProductsPage() {
         <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     }>
-      <ProductsClient />
+      <WishlistClient />
     </Suspense>
   );
 }
+

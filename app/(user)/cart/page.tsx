@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Plus, Minus, Trash } from 'lucide-react'
 import CartButton from '@/components/cart/cart-button'
+import WishlistButton from '@/components/wishlist/wishlist-button'
 import { useCart } from '@/components/cart/cart-context'
 import {
   Dialog,
@@ -25,7 +26,7 @@ function page() {
   return (
     <div>
       {/* Header */}
-      <header className="sticky top-0 z-[100] bg-green-900 shadow-sm border-b">
+      <header className="sticky top-0 z-[100] bg-green-900 dark:bg-green-950 shadow-sm border-b border-green-800 dark:border-green-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
           {/* Mobile Layout: Stack vertically */}
           <div className="flex flex-col gap-3 sm:hidden">
@@ -39,9 +40,10 @@ function page() {
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
-                <h1 className="text-lg font-bold text-yellow-500 whitespace-nowrap">My Cart</h1>
+                <h1 className="text-lg font-bold text-yellow-500 dark:text-yellow-400 whitespace-nowrap">My Cart</h1>
               </div>
               <div className="flex items-center gap-3">
+                <WishlistButton />
                 <CartButton />
                 <UserMenu />
               </div>
@@ -59,9 +61,10 @@ function page() {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-              <h1 className="text-xl md:text-2xl font-bold text-yellow-500 whitespace-nowrap">My Cart</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-yellow-500 dark:text-yellow-400 whitespace-nowrap">My Cart</h1>
             </div>
             <div className="flex items-center gap-4 md:gap-6 flex-shrink-0 ml-auto">
+              <WishlistButton />
               <CartButton />
               <UserMenu />
             </div>
@@ -110,7 +113,7 @@ function CartContents() {
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Your cart is empty</p>
+        <p className="text-muted-foreground">Your cart is empty</p>
       </div>
     );
   }
@@ -127,13 +130,13 @@ function CartContents() {
                 if (e.target.checked) setSelected(new Set(items.map((i) => i.id)));
                 else setSelected(new Set());
               }}
-              className="cursor-pointer"
+              className="cursor-pointer w-4 h-4 accent-primary"
             />
-            <h2 className="text-lg font-semibold">Cart ({count} items)</h2>
+            <h2 className="text-lg font-semibold text-foreground">Cart ({count} items)</h2>
           </div>
 
           <div>
-            <button className="text-sm text-red-600 cursor-pointer" onClick={() => setClearConfirmOpen(true)}>Clear</button>
+            <button className="text-sm text-destructive hover:text-destructive/80 cursor-pointer transition-colors" onClick={() => setClearConfirmOpen(true)}>Clear</button>
             <Dialog open={clearConfirmOpen} onOpenChange={setClearConfirmOpen}>
               <DialogContent>
                 <DialogHeader>
@@ -172,7 +175,7 @@ function CartContents() {
           {items.map((it) => {
             const isOutOfStock = it.stock !== undefined && it.stock === 0;
             return (
-            <div key={it.id} className={`flex items-center gap-4 bg-white p-4 rounded-md border ${isOutOfStock ? 'opacity-60' : ''}`}>
+            <div key={it.id} className={`flex items-center gap-4 bg-card p-4 rounded-md border border-border ${isOutOfStock ? 'opacity-60' : ''}`}>
               <input
                 type="checkbox"
                 checked={selected.has(it.id)}
@@ -184,26 +187,26 @@ function CartContents() {
                   else next.delete(it.id);
                   setSelected(next);
                 }}
-                className={isOutOfStock ? 'cursor-not-allowed' : 'cursor-pointer'}
+                className={`w-4 h-4 accent-primary ${isOutOfStock ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               />
               {it.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={it.image} alt={it.name} className="w-20 h-20 object-contain" />
+                <img src={it.image} alt={it.name} className="w-20 h-20 object-contain rounded" />
               ) : (
-                <div className="w-20 h-20 bg-gray-100" />
+                <div className="w-20 h-20 bg-muted rounded" />
               )}
               <div className="flex-1 min-w-0">
-                <div className="font-medium truncate">{it.name}</div>
-                <div className="text-sm text-gray-600">₱{it.price.toFixed(2)}</div>
+                <div className="font-medium truncate text-foreground">{it.name}</div>
+                <div className="text-sm text-muted-foreground">₱{it.price.toFixed(2)}</div>
                 {it.stock !== undefined && (
-                  <div className={`text-xs mt-1 ${it.stock === 0 ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>
+                  <div className={`text-xs mt-1 ${it.stock === 0 ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
                     {it.stock === 0 ? 'Out of Stock' : `${it.stock} available`}
                   </div>
                 )}
                 <div className="mt-2 flex items-center gap-2">
                   <button
                     aria-label={`Decrease ${it.name}`}
-                    className={`p-1 border rounded ${it.stock === 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    className={`p-1 border border-border rounded bg-background hover:bg-accent text-foreground transition-colors ${it.stock === 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     disabled={it.stock === 0}
                     onClick={() => {
                       if (it.stock === 0) return;
@@ -235,12 +238,12 @@ function CartContents() {
                         updateQuantity(it.id, maxVal);
                       }
                     }}
-                    className={`w-20 p-1 border rounded text-center ${it.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`w-20 p-1 border border-border rounded text-center bg-background text-foreground ${it.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
 
                   <button
                     aria-label={`Increase ${it.name}`}
-                    className={`p-1 border rounded ${it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                    className={`p-1 border border-border rounded bg-background hover:bg-accent text-foreground transition-colors ${it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock) ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                     disabled={it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock)}
                     onClick={() => {
                       if (it.stock === 0 || (it.stock !== undefined && it.quantity >= it.stock)) return;
@@ -250,7 +253,7 @@ function CartContents() {
                     <Plus className="w-4 h-4" />
                   </button>
 
-                  <button className="text-sm text-red-600 ml-2 cursor-pointer" onClick={() => setRemoveId(it.id)}>Remove</button>
+                  <button className="text-sm text-destructive hover:text-destructive/80 ml-2 cursor-pointer transition-colors" onClick={() => setRemoveId(it.id)}>Remove</button>
                   <Dialog open={removeId === it.id} onOpenChange={(open) => { if (!open) setRemoveId(null); }}>
                     <DialogContent>
                       <DialogHeader>
@@ -282,8 +285,8 @@ function CartContents() {
                 </div>
               </div>
               <div className="text-right w-32">
-                <div className="text-sm text-gray-600">Total</div>
-                <div className="text-lg font-semibold">₱{(it.price * it.quantity).toFixed(2)}</div>
+                <div className="text-sm text-muted-foreground">Total</div>
+                <div className="text-lg font-semibold text-foreground">₱{(it.price * it.quantity).toFixed(2)}</div>
               </div>
             </div>
             );
@@ -291,29 +294,29 @@ function CartContents() {
         </div>
       </div>
 
-      <aside className="w-full lg:w-80 bg-white p-4 rounded-md border">
+      <aside className="w-full lg:w-80 bg-card p-4 rounded-md border border-border">
         <div className="mb-4">
-          <h3 className="text-lg font-semibold">Order Summary</h3>
-          <p className="text-sm text-gray-600">{items.length} line item(s)</p>
+          <h3 className="text-lg font-semibold text-foreground">Order Summary</h3>
+          <p className="text-sm text-muted-foreground">{items.length} line item(s)</p>
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-gray-600">Selected Subtotal</span>
-          <span className="font-semibold">₱{subtotalSelected.toFixed(2)}</span>
+          <span className="text-sm text-muted-foreground">Selected Subtotal</span>
+          <span className="font-semibold text-foreground">₱{subtotalSelected.toFixed(2)}</span>
         </div>
 
         <div className="flex items-center justify-between mb-6">
-          <span className="text-sm text-gray-600">Shipping</span>
-          <span className="font-semibold">₱0.00</span>
+          <span className="text-sm text-muted-foreground">Shipping</span>
+          <span className="font-semibold text-foreground">₱0.00</span>
         </div>
 
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-base">Total</span>
-          <span className="text-xl font-bold">₱{subtotalSelected.toFixed(2)}</span>
+        <div className="flex items-center justify-between mb-6 border-t border-border pt-4">
+          <span className="text-base font-semibold text-foreground">Total</span>
+          <span className="text-xl font-bold text-foreground">₱{subtotalSelected.toFixed(2)}</span>
         </div>
 
         <button
-          className="w-full bg-primary text-white py-2 rounded-md disabled:opacity-60"
+          className="w-full bg-primary text-primary-foreground py-2 rounded-md hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           disabled={selected.size === 0 || isCheckingOut || items.some(it => selected.has(it.id) && it.stock === 0)}
           onClick={() => {
             const selectedItems = items.filter((it) => selected.has(it.id));

@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { UserMenu } from "@/components/ui/user-menu";
 import CartButton from "@/components/cart/cart-button";
+import WishlistButton from "@/components/wishlist/wishlist-button";
 import Image from "next/image";
 import { ReviewModal } from "@/components/review/review-modal";
 import { getUserReviewByOrderItem } from "@/services/review";
@@ -111,9 +112,9 @@ export function OrdersClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-[100] bg-green-900 shadow-sm border-b">
+      <header className="sticky top-0 z-[100] bg-green-900 dark:bg-green-950 shadow-sm border-b border-green-800 dark:border-green-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
           {/* Mobile Layout: Stack vertically */}
           <div className="flex flex-col gap-3 sm:hidden">
@@ -127,11 +128,12 @@ export function OrdersClient() {
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
-                <Link href="/store" className="text-lg font-bold text-yellow-500 hover:text-yellow-400 transition-colors cursor-pointer whitespace-nowrap">
+                <Link href="/store" className="text-lg font-bold text-yellow-500 dark:text-yellow-400 hover:text-yellow-400 dark:hover:text-yellow-300 transition-colors cursor-pointer whitespace-nowrap">
                   TechCraftersHQ
                 </Link>
               </div>
               <div className="flex items-center gap-3">
+                <WishlistButton />
                 <CartButton />
                 <UserMenu />
               </div>
@@ -149,11 +151,12 @@ export function OrdersClient() {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-              <Link href="/store" className="text-xl md:text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition-colors cursor-pointer whitespace-nowrap">
+              <Link href="/store" className="text-xl md:text-2xl font-bold text-yellow-500 dark:text-yellow-400 hover:text-yellow-400 dark:hover:text-yellow-300 transition-colors cursor-pointer whitespace-nowrap">
                 TechCraftersHQ
               </Link>
             </div>
             <div className="flex items-center gap-4 md:gap-6 flex-shrink-0 ml-auto">
+              <WishlistButton />
               <CartButton />
               <UserMenu />
             </div>
@@ -163,20 +166,20 @@ export function OrdersClient() {
 
       {/* Orders List */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Order History</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-6">Order History</h1>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="flex flex-col items-center gap-4">
               <Spinner className="w-8 h-8" />
-              <p className="text-sm text-gray-600">Loading orders...</p>
+              <p className="text-sm text-muted-foreground">Loading orders...</p>
             </div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-red-600" />
-              <p className="text-sm text-red-600">{error}</p>
+              <AlertCircle className="w-5 h-5 text-destructive" />
+              <p className="text-sm text-destructive">{error}</p>
               <Button
                 variant="outline"
                 size="sm"
@@ -189,8 +192,8 @@ export function OrdersClient() {
           </div>
         ) : orders.length === 0 ? (
           <div className="text-center py-12">
-            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 mb-4">No orders yet</p>
+            <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground mb-4">No orders yet</p>
             <Button onClick={() => router.push("/store")}>
               Start Shopping
             </Button>
@@ -198,15 +201,15 @@ export function OrdersClient() {
         ) : (
           <div className="space-y-4">
             {orders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-4 pb-4 border-b">
+              <div key={order.id} className="bg-card rounded-lg shadow-sm border border-border p-6">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
                   <div>
-                    <div className="text-sm text-gray-500">Order ID</div>
-                    <div className="font-semibold text-gray-900">{order.id.slice(0, 8)}...</div>
+                    <div className="text-sm text-muted-foreground">Order ID</div>
+                    <div className="font-semibold text-foreground">{order.id.slice(0, 8)}...</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-gray-500">Order Date</div>
-                    <div className="font-medium text-gray-900">
+                    <div className="text-sm text-muted-foreground">Order Date</div>
+                    <div className="font-medium text-foreground">
                       {new Date(order.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -215,18 +218,18 @@ export function OrdersClient() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-gray-500">Total</div>
+                    <div className="text-sm text-muted-foreground">Total</div>
                     <div className="text-xl font-bold text-primary">₱{order.total.toFixed(2)}</div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">Items:</div>
+                  <div className="text-sm font-semibold text-foreground mb-2">Items:</div>
                   {order.items.map((item) => {
                     const hasReview = orderItemReviews.has(item.id);
                     const review = orderItemReviews.get(item.id);
                     return (
-                      <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded">
+                      <div key={item.id} className="flex items-center gap-4 p-3 bg-muted/50 rounded border border-border">
                         {item.product.image && (
                           <Image
                             src={item.product.image}
@@ -237,20 +240,20 @@ export function OrdersClient() {
                           />
                         )}
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">{item.product.name}</div>
-                          <div className="text-sm text-gray-600">
+                          <div className="font-medium truncate text-foreground">{item.product.name}</div>
+                          <div className="text-sm text-muted-foreground">
                             Quantity: {item.quantity} × ₱{item.price.toFixed(2)}
                           </div>
                           {hasReview && review && (
                             <div className="flex items-center gap-1 mt-1">
                               <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <span className="text-xs text-gray-600">You rated {review.rating} stars</span>
+                              <span className="text-xs text-muted-foreground">You rated {review.rating} stars</span>
                             </div>
                           )}
                         </div>
                         <div className="flex flex-col items-end gap-2">
                           <div className="text-right">
-                            <div className="font-semibold">₱{(item.price * item.quantity).toFixed(2)}</div>
+                            <div className="font-semibold text-foreground">₱{(item.price * item.quantity).toFixed(2)}</div>
                           </div>
                           <Button
                             variant={hasReview ? "outline" : "default"}

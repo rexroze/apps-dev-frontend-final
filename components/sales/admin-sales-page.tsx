@@ -199,45 +199,45 @@ export function AdminSalesPage() {
       <AdminLayout title="Sales History">
           {/* Statistics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600">Total Revenue</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 truncate">₱{totalRevenue.toFixed(2)}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Revenue</p>
+                  <p className="text-xl sm:text-2xl font-bold text-foreground mt-1 truncate">₱{totalRevenue.toFixed(2)}</p>
                   {recentTrend.change > 0 && (
-                    <p className={`text-xs mt-1 ${recentTrend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className={`text-xs mt-1 ${recentTrend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-destructive'}`}>
                       {recentTrend.isPositive ? '↑' : '↓'} {recentTrend.change.toFixed(1)}% vs last week
                     </p>
                   )}
                 </div>
-                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 flex-shrink-0 ml-2" />
+                <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600">Total Orders</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{totalOrders}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Orders</p>
+                  <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">{totalOrders}</p>
                 </div>
-                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 flex-shrink-0 ml-2" />
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600">Avg Order Value</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1 truncate">₱{averageOrderValue.toFixed(2)}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Avg Order Value</p>
+                  <p className="text-xl sm:text-2xl font-bold text-foreground mt-1 truncate">₱{averageOrderValue.toFixed(2)}</p>
                 </div>
-                <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 flex-shrink-0 ml-2" />
+                <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600 dark:text-purple-400 flex-shrink-0 ml-2" />
               </div>
             </div>
-            <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs sm:text-sm text-gray-600">Total Items Sold</p>
-                  <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{totalItems}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Items Sold</p>
+                  <p className="text-xl sm:text-2xl font-bold text-foreground mt-1">{totalItems}</p>
                 </div>
-                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 flex-shrink-0 ml-2" />
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 dark:text-orange-400 flex-shrink-0 ml-2" />
               </div>
             </div>
           </div>
@@ -245,15 +245,15 @@ export function AdminSalesPage() {
           {/* Analytics Charts */}
           {orders.length > 0 && (
             <div className="space-y-6 mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
                 <BarChart3 className="w-5 h-5" />
                 Analytics Dashboard
               </h2>
 
               {/* Revenue and Orders Over Time */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Revenue Over Time</h3>
+                <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Revenue Over Time</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <AreaChart data={revenueOverTime}>
                       <defs>
@@ -294,8 +294,8 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Orders Over Time</h3>
+                <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Orders Over Time</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={revenueOverTime}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -332,8 +332,8 @@ export function AdminSalesPage() {
 
               {/* Top Products and Revenue by Day */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Top Selling Products</h3>
+                <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Top Selling Products</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={topProducts} layout="vertical">
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -368,8 +368,8 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Revenue by Day of Week</h3>
+                <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm border border-border">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Revenue by Day of Week</h3>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={revenueByDay}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -398,89 +398,6 @@ export function AdminSalesPage() {
                   </ResponsiveContainer>
                 </div>
               </div>
-            </div>
-          )}
-
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">All Orders</h2>
-
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Spinner className="w-8 h-8" />
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-                <p className="text-sm text-red-600">{error}</p>
-                <Button variant="outline" size="sm" onClick={fetchSales} className="ml-auto">
-                  Retry
-                </Button>
-              </div>
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="text-center py-12">
-              <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No sales yet</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {orders.map((order) => (
-                <div key={order.id} className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 pb-4 border-b">
-                    <div>
-                      <div className="text-xs sm:text-sm text-gray-500">Order ID</div>
-                      <div className="font-semibold text-sm sm:text-base text-gray-900 break-all">{order.id.slice(0, 8)}...</div>
-                    </div>
-                    <div>
-                      <div className="text-xs sm:text-sm text-gray-500">Buyer</div>
-                      <div className="font-medium text-sm sm:text-base text-gray-900">{order.user.name}</div>
-                      <div className="text-xs text-gray-500 truncate">{order.user.email}</div>
-                    </div>
-                    <div className="sm:text-right">
-                      <div className="text-xs sm:text-sm text-gray-500">Purchase Date</div>
-                      <div className="font-medium text-xs sm:text-sm text-gray-900">
-                        {new Date(order.createdAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </div>
-                    </div>
-                    <div className="sm:text-right">
-                      <div className="text-xs sm:text-sm text-gray-500">Total</div>
-                      <div className="text-lg sm:text-xl font-bold text-primary">₱{order.total.toFixed(2)}</div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="text-sm font-semibold text-gray-700 mb-2">Items Purchased:</div>
-                    {order.items.map((item) => (
-                      <div key={item.id} className="flex items-start sm:items-center gap-3 sm:gap-4 p-3 bg-gray-50 rounded">
-                        {item.product.image && (
-                          <Image
-                            src={item.product.image}
-                            alt={item.product.name}
-                            width={60}
-                            height={60}
-                            className="object-contain rounded flex-shrink-0"
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm sm:text-base break-words">{item.product.name}</div>
-                          <div className="text-xs sm:text-sm text-gray-600">
-                            Quantity: {item.quantity} × ₱{item.price.toFixed(2)}
-                          </div>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="font-semibold text-sm sm:text-base">₱{(item.price * item.quantity).toFixed(2)}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
             </div>
           )}
       </AdminLayout>

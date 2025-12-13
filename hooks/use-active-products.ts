@@ -12,8 +12,8 @@ interface UseActiveProductsReturn {
   mutate: KeyedMutator<any>;
 }
 
-export function useActiveProducts(opts?: { search?: string; categoryId?: string; page?: number; limit?: number }): UseActiveProductsReturn {
-  const key = ["active-products", opts?.search ?? "", opts?.categoryId ?? "", opts?.page ?? 1, opts?.limit ?? 100];
+export function useActiveProducts(opts?: { search?: string; categoryId?: string }): UseActiveProductsReturn {
+  const key = ["active-products", opts?.search ?? "", opts?.categoryId ?? ""];
   const { data, error, isLoading, mutate } = useSWR(
     key,
     () => getActiveProductsService(opts),
@@ -26,6 +26,7 @@ export function useActiveProducts(opts?: { search?: string; categoryId?: string;
 
   // Extract products from API response
   let products: ProductListResponse[] = [];
+  
   if (data) {
     if (data.status === "success" && data.data) {
       products = Array.isArray(data.data) ? data.data : [];

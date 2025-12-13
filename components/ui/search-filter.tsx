@@ -82,21 +82,23 @@ export function SearchFilter({ initialSearch = "", initialCategoryId, onChange, 
 
   return (
     <div className="flex flex-row items-center gap-2 w-full">
-      <Input
-        placeholder="Search..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="flex-1 bg-white rounded-full sm:rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base min-w-0 h-9"
-      />
+      <div className="relative flex-1">
+        <Input
+          placeholder="Search products..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="flex-1 rounded-full sm:rounded-lg px-4 sm:px-5 py-2 text-sm sm:text-base min-w-0 h-10 sm:h-11 bg-white dark:bg-background dark:text-foreground border-gray-300 dark:border-border focus-visible:ring-2 focus-visible:ring-yellow-400/50 focus-visible:border-yellow-400 dark:focus-visible:border-yellow-400 shadow-sm"
+        />
+      </div>
 
       <Select
         value={selectValue}
         onValueChange={handleCategoryChange}
       >
-        <SelectTrigger className="bg-white border-gray-300 focus:ring-2 focus:ring-yellow-500 h-9 w-[120px] sm:w-[160px] md:w-[180px] flex-shrink-0 text-sm">
-          <SelectValue placeholder="Category" />
+        <SelectTrigger className="h-10 sm:h-11 w-[140px] sm:w-[180px] md:w-[200px] flex-shrink-0 text-sm bg-gray-50 dark:bg-input/30 hover:bg-gray-100 dark:hover:bg-input/50 border-gray-300 dark:border-input shadow-sm">
+          <SelectValue placeholder="All Categories" />
         </SelectTrigger>
-        <SelectContent className="max-h-[300px]">
+        <SelectContent className="max-h-[300px] bg-white dark:bg-background dark:text-foreground z-[200]" position="popper" sideOffset={4}>
           <SelectItem value="all">All Categories</SelectItem>
           {categories.map((c) => (
             <SelectItem key={c.id} value={c.id}>

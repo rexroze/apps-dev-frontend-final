@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
-import { useCart } from "@/components/cart/cart-context";
+import { Heart } from "lucide-react";
+import { useWishlist } from "@/components/wishlist/wishlist-context";
 import React from "react";
 
-export function CartButton() {
-  const { count } = useCart();
+export function WishlistButton() {
+  const { count } = useWishlist();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -14,8 +14,8 @@ export function CartButton() {
   }, []);
 
   return (
-    <Link href="/cart" className="relative inline-flex items-center hover:opacity-80 transition-opacity">
-      <ShoppingCart className="text-yellow-400 dark:text-yellow-300 w-6 h-6" />
+    <Link href="/wishlist" className="relative inline-flex items-center hover:opacity-80 transition-opacity">
+      <Heart className="text-yellow-400 dark:text-yellow-300 w-6 h-6" />
       {mounted && count > 0 && (
         <span className="absolute -top-1 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
           {count}
@@ -25,4 +25,5 @@ export function CartButton() {
   );
 }
 
-export default CartButton;
+export default WishlistButton;
+

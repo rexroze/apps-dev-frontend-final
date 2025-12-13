@@ -138,7 +138,7 @@ export function AdminCategoriesPage() {
     <ProtectedRoute requiredRole="ADMIN">
       <AdminLayout title="Category Management">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Categories</h2>
+            <h2 className="text-xl font-semibold text-foreground">Categories</h2>
             <Button onClick={() => setIsCreateModalOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Add Category
@@ -150,33 +150,33 @@ export function AdminCategoriesPage() {
               <Spinner className="w-8 h-8" />
             </div>
           ) : error ? (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-                <p className="text-sm text-red-600">{error}</p>
+                <AlertCircle className="w-5 h-5 text-destructive" />
+                <p className="text-sm text-destructive">{error}</p>
                 <Button variant="outline" size="sm" onClick={fetchCategories} className="ml-auto">
                   Retry
                 </Button>
               </div>
             </div>
           ) : (
-            <div className="bg-gray-100 rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-200">
+                <table className="min-w-full divide-y divide-border">
+                <thead className="bg-muted">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Slug</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Created</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Slug</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Created</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-gray-100 divide-y divide-gray-300">
+                <tbody className="bg-card divide-y divide-border">
                   {categories.map((category) => (
-                    <tr key={category.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{category.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{category.slug || "-"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <tr key={category.id} className="hover:bg-accent transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{category.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{category.slug || "-"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                         {new Date(category.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -192,7 +192,7 @@ export function AdminCategoriesPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDelete(category)}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-destructive hover:text-destructive/80"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -207,12 +207,12 @@ export function AdminCategoriesPage() {
 
         {/* Create Modal */}
         {isCreateModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-gray-100 rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold mb-4">Create Category</h3>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card rounded-lg p-6 max-w-md w-full mx-4 border border-border shadow-lg">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Create Category</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Name *</label>
                   <Input
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -220,7 +220,7 @@ export function AdminCategoriesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Slug (optional)</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Slug (optional)</label>
                   <Input
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
@@ -243,12 +243,12 @@ export function AdminCategoriesPage() {
 
         {/* Edit Modal */}
         {isEditModalOpen && editingCategory && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-gray-100 rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold mb-4">Edit Category</h3>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card rounded-lg p-6 max-w-md w-full mx-4 border border-border shadow-lg">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Edit Category</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Name *</label>
                   <Input
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -256,7 +256,7 @@ export function AdminCategoriesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Slug (optional)</label>
+                  <label className="block text-sm font-medium text-foreground mb-1">Slug (optional)</label>
                   <Input
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
@@ -280,10 +280,10 @@ export function AdminCategoriesPage() {
 
         {/* Delete Confirmation Modal */}
         {deleteConfirmOpen && deletingCategory && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-gray-100 rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold mb-4">Delete Category</h3>
-              <p className="text-gray-600 mb-6">
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card rounded-lg p-6 max-w-md w-full mx-4 border border-border shadow-lg">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Delete Category</h3>
+              <p className="text-muted-foreground mb-6">
                 Are you sure you want to delete "{deletingCategory.name}"? This action cannot be undone.
                 If this category has products, deletion will be prevented.
               </p>
@@ -300,7 +300,8 @@ export function AdminCategoriesPage() {
                 </Button>
                 <Button
                   onClick={confirmDelete}
-                  className="flex-1 bg-red-600 hover:bg-red-700"
+                  variant="destructive"
+                  className="flex-1"
                 >
                   Delete
                 </Button>

@@ -114,15 +114,15 @@ function CheckoutPageContent() {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
-      <h1 className="text-2xl font-semibold mb-6">Checkout</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-foreground">Checkout</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-lg font-semibold mb-4">Order Items</h2>
+          <div className="bg-card p-6 rounded-lg shadow-sm border border-border">
+            <h2 className="text-lg font-semibold mb-4 text-foreground">Order Items</h2>
             <div className="space-y-4">
               {checkoutItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-4 pb-4 border-b last:border-0">
+                <div key={item.id} className="flex items-center gap-4 pb-4 border-b border-border last:border-0">
                   {item.image && (
                     <Image
                       src={item.image}
@@ -133,16 +133,16 @@ function CheckoutPageContent() {
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium truncate">{item.name}</div>
-                    <div className="text-sm text-gray-600">₱{item.price.toFixed(2)} × {item.quantity}</div>
+                    <div className="font-medium truncate text-foreground">{item.name}</div>
+                    <div className="text-sm text-muted-foreground">₱{item.price.toFixed(2)} × {item.quantity}</div>
                     {item.stock !== undefined && (
-                      <div className={`text-xs mt-1 ${item.stock === 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                      <div className={`text-xs mt-1 ${item.stock === 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
                         {item.stock === 0 ? 'Out of Stock' : `${item.stock} available`}
                       </div>
                     )}
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold">₱{(item.price * item.quantity).toFixed(2)}</div>
+                    <div className="font-semibold text-foreground">₱{(item.price * item.quantity).toFixed(2)}</div>
                   </div>
                 </div>
               ))}
@@ -151,20 +151,20 @@ function CheckoutPageContent() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow sticky top-4">
-            <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
+          <div className="bg-card p-6 rounded-lg shadow-sm border border-border sticky top-4">
+            <h2 className="text-lg font-semibold mb-4 text-foreground">Order Summary</h2>
             <div className="space-y-3 mb-6">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
-                <span>₱{total.toFixed(2)}</span>
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-foreground">₱{total.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Shipping</span>
-                <span>₱0.00</span>
+                <span className="text-muted-foreground">Shipping</span>
+                <span className="text-foreground">₱0.00</span>
               </div>
-              <div className="border-t pt-3 flex justify-between font-semibold">
-                <span>Total</span>
-                <span>₱{total.toFixed(2)}</span>
+              <div className="border-t border-border pt-3 flex justify-between font-semibold">
+                <span className="text-foreground">Total</span>
+                <span className="text-foreground">₱{total.toFixed(2)}</span>
               </div>
             </div>
             <Button
